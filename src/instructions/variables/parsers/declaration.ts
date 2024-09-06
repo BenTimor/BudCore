@@ -24,6 +24,12 @@ export class DeclarationParser extends InternalInstructionParser {
             throw new Error("Variable already exists");
         }
 
+        this.limitNext = ["Equals"];
+
+        if (this.next()?.instruction !== "Equals") {
+            throw new Error("Invalid variable declaration");
+        }
+
         this.clearLimitNext();
 
         const value = this.next();
