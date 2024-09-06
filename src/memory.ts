@@ -1,11 +1,10 @@
-type MemoryStorage = {
-    [key: `VAR_${string}`]: boolean,
-};
+import { IMemory, MemoryStorage } from "./types";
 
-export class Memory {
+export class Memory implements IMemory {
     constructor(private parent?: Memory) {}
 
-    private memory: MemoryStorage = {};
+    private memory: MemoryStorage = {
+    };
 
     set<K extends keyof MemoryStorage>(key: K, value: MemoryStorage[K], forceCurrent: boolean) {
         if (!this.parent || forceCurrent) {

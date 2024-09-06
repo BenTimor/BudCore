@@ -50,10 +50,11 @@ export class DeclarationParser extends InternalInstructionParser {
             throw new Error("Invalid variable value");
         }
 
-        this.injection.memory.set(`VAR_${identifier}`, true, true);
+        this.injection.memory.set(`VAR_${identifier}`, `VAR_DECLARATION_${identifier}`, true); // TODO: We'll have scope issues here, we need to rethink this
 
         return {
             instruction: "VariableDeclaration",
+            identifier: `VAR_DECLARATION_${identifier}`,
             context: {
                 name: identifier,
                 mutable,

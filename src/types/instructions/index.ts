@@ -1,7 +1,7 @@
 import { ASTBuilder, InstructionNode, InstructionParser } from "engine";
 import { VariablesInstructions } from "./variables";
 import { PrimitivesInstructions } from "./primitives";
-import { Injections } from "./injections";
+import { Injections } from "../injections";
 import { ExtrasInstructions } from "./extras";
 
 export type Instructions = 
@@ -17,4 +17,3 @@ export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> {}
 
 export * from "./variables";
 export * from "./primitives";
-export * from "./injections";

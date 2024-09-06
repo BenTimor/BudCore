@@ -4,7 +4,7 @@ export class ReadParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableRead";
 
     check(): boolean {
-        return this.injection.memory.get(`VAR_${this.arg}`, false);
+        return !!this.injection.memory.get(`VAR_${this.arg}`, false);
     }
 
     handle(): InternalInstructionNode {

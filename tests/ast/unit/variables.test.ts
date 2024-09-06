@@ -77,4 +77,27 @@ describe('AST Variables', () => {
         expect(context!.name).toBe("a");
         expect(context!.mutable).toBe(true);
     });
+
+    test("Change mutable variable", () => {
+        const astBuilder = astBuilderFactory();
+        const code = "set mut a = 1\na = 2";
+        const ast = astBuilder.fromContent(code);
+
+        expect(ast.length).toBe(2);
+
+        const varNode = ast[1];
+
+        expect(varNode.instruction).toBe("VariableAssignment");
+
+        const context = varNode.context;
+
+        expect(context).toBeDefined();
+        expect(context!.name).toBe("a");
+    });
+
+    test("Change immutable variable", () => {
+        const astBuilder = astBuilderFactory();
+        const code = "set a = 1\na = 2";
+        expect(() => astBuilder.fromContent(code)).toThrow();
+    });
 });
