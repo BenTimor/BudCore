@@ -22,4 +22,12 @@ describe('AST Data In Variables', () => {
         expect(numberContext).toBeDefined();
         expect(numberContext!.value).toBe(1);
     });
+
+    test("Multiple variables should be assigned", () => {
+        const code = "set a = 1\nset b = 2";
+        const ast = astBuilder.fromContent(code);
+
+        expect(ast.length).toBe(2);
+        ast.forEach(node => expect(node.instruction).toBe("VariableDeclaration"));
+    });
 });
