@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "tsc",
     "dev": "ts-node src/index.ts"
   },
@@ -15,6 +15,7 @@
     "engine": "link:..\\engine"
   },
   "devDependencies": {
-    "@types/node": "^22.5.4"
+    "@types/node": "^22.5.4",
+    "vitest": "^2.0.5"
   }
 }

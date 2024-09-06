@@ -9,7 +9,7 @@ export class NumberParser extends InternalPrimitivesParser {
 
     handle(): InternalPrimitivesNode {
         return {
-            value: "Number",
+            instruction: "Number",
             context: {
                 value: +this.arg,
             },

@@ -9,7 +9,7 @@ export class NameParser extends InternalVariablesParser {
     }
     handle(): InternalVariablesNode {
         return {
-            value: "VariableName",
+            instruction: "VariableName",
             context: {
                 identifier: this.arg,
             },

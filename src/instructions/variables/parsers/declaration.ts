@@ -6,12 +6,13 @@ export class DeclarationParser extends InternalVariablesParser {
     check(): boolean {
         return this.arg === "set";
     }
+    
     handle(): InternalVariablesNode {
         this.limitNext = ["VariableName"];
 
         const name = this.next();
 
-        if (name?.value !== "VariableName") {
+        if (name?.instruction !== "VariableName") {
             throw new Error("Invalid variable name");
         }
 
@@ -24,7 +25,7 @@ export class DeclarationParser extends InternalVariablesParser {
         }
 
         return {
-            value: "VariableDeclaration",
+            instruction: "VariableDeclaration",
             context: {
                 name: name.context!.identifier,
                 value: value,
