@@ -2,11 +2,20 @@ import { readFileSync, writeFileSync } from "fs";
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions } from "./instructions/variables";
 import { InternalASTBuilder } from "./types";
+import { Memory } from "./memory";
+import { extrasInstructions } from "./instructions/extras";
 
-export const astBuilder = new InternalASTBuilder([
-    ...variablesInstructions,
-    ...primitivesInstructions,
-]);
+export function astBuilderFactory() {
+    return new InternalASTBuilder([
+        ...variablesInstructions,
+        ...primitivesInstructions,
+        ...extrasInstructions,
+    ], {
+        memory: new Memory(),
+    });
+}
+
+const astBuilder = astBuilderFactory();
 
 if (require.main === module) {
     const file = process.argv[2];

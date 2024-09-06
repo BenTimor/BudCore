@@ -1,8 +1,9 @@
 import { describe, test, expect } from "vitest";
-import { astBuilder } from "../../../src";
+import { astBuilderFactory } from "../../../src";
 
 describe("Numbers", () => {
     test("should parse numbers", () => {
+        const astBuilder = astBuilderFactory();
         const code = "1";
         const ast = astBuilder.fromContent(code);
 
