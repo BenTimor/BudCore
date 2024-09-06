@@ -1,3 +1,4 @@
+import { savedWords } from "../../../savedWords";
 import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class NameParser extends InternalInstructionParser {
@@ -5,7 +6,7 @@ export class NameParser extends InternalInstructionParser {
     limited = true;
     
     check(): boolean {
-        return this.arg.match(/^[a-zA-Z_]/) !== null;
+        return this.arg.match(/^[a-zA-Z_]/) !== null && !savedWords.has(this.arg);
     }
     handle(): InternalInstructionNode {
         return {

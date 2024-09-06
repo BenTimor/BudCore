@@ -8,9 +8,21 @@ export class DeclarationParser extends InternalInstructionParser {
     }
     
     handle(): InternalInstructionNode {
-        this.limitNext = ["VariableName"];
+        this.limitNext = ["VariableName", "VariableMutable"];
 
-        const name = this.next();
+        const next = this.next();
+
+        let mutable: boolean = false;
+        let name: typeof next;
+
+        if (next?.instruction === "VariableMutable") {            
+            this.limitNext = ["VariableName"];
+            mutable = true;
+            name = this.next();
+        }
+        else {
+            name = next;
+        }
 
         if (name?.instruction !== "VariableName") {
             throw new Error("Invalid variable name");
@@ -44,6 +56,7 @@ export class DeclarationParser extends InternalInstructionParser {
             instruction: "VariableDeclaration",
             context: {
                 name: identifier,
+                mutable,
                 value: value,
             },
         };

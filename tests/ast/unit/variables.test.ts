@@ -59,4 +59,22 @@ describe('AST Variables', () => {
         const code = "set a 1";
         expect(() => astBuilder.fromContent(code)).toThrow();
     });
+
+    test("Set mutable variable", () => {
+        const astBuilder = astBuilderFactory();
+        const code = "set mut a = 1";
+        const ast = astBuilder.fromContent(code);
+
+        expect(ast.length).toBe(1);
+
+        const varNode = ast[0];
+
+        expect(varNode.instruction).toBe("VariableDeclaration");
+
+        const context = varNode.context;
+
+        expect(context).toBeDefined();
+        expect(context!.name).toBe("a");
+        expect(context!.mutable).toBe(true);
+    });
 });
