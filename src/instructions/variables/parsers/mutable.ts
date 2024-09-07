@@ -1,4 +1,4 @@
-import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class MutableParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableMutable";
@@ -7,9 +7,12 @@ export class MutableParser extends InternalInstructionParser {
     check(): boolean {        
         return this.arg === "mut";
     }
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "VariableMutable",
+            context: {
+                type: "void",
+            }
         };
     }
 }

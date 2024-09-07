@@ -1,4 +1,4 @@
-import { InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser } from "../../../types";
 import { ExtrasInstructions } from "../../../types/instructions/extras";
 
 export class EqualsParser extends InternalInstructionParser {
@@ -9,9 +9,12 @@ export class EqualsParser extends InternalInstructionParser {
         return this.arg === "=";
     }
 
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "Equals",
+            context: {
+                type: "void",
+            }
         };
     }
 }

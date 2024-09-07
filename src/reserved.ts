@@ -1,4 +1,6 @@
-export const reserved = new Set([
-    "set",
-    "mut",
-]);
+export namespace Reserved {
+    export const words = new Set([
+        "set",
+        "mut",
+    ]);
+}

@@ -1,3 +1,4 @@
 export type ExtrasInstructions =
     | "Semicolon"
-    | "Equals";
+    | "Equals"
+    | "Operator";

@@ -1,4 +1,4 @@
-import { InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser } from "../../../types";
 
 export class NumberParser extends InternalInstructionParser {
     instruction: "Number" = "Number";
@@ -7,11 +7,12 @@ export class NumberParser extends InternalInstructionParser {
         return isNaN(+this.arg) === false;
     }
 
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "Number",
             context: {
                 value: +this.arg,
+                type: "number",
             },
         };
     }

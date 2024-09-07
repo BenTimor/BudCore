@@ -1,11 +1,10 @@
 import { describe, test, expect } from "vitest";
-import { astBuilderFactory } from "../../../src";
+import { buildAST } from "../../../src";
 
 describe("Numbers", () => {
     test("should parse numbers", () => {
-        const astBuilder = astBuilderFactory();
         const code = "1";
-        const ast = astBuilder.fromContent(code);
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(1);
 

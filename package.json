@@ -13,10 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "engine": "link:..\\engine",
-    "nanoid": "^5.0.7"
+    "nanoid": "^3.3.4"
   },
   "devDependencies": {
     "@types/node": "^22.5.4",
+    "typescript": "^5.5.4",
     "vitest": "^2.0.5"
   }
 }

@@ -1,4 +1,4 @@
-import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class ReadParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableRead";
@@ -7,11 +7,16 @@ export class ReadParser extends InternalInstructionParser {
         return !!this.injection.memory.get(`VAR_${this.arg}`, false);
     }
 
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
+        const varIdentifier = this.injection.memory.get(`VAR_${this.arg}`, false);
+
+        const varNode = this.astBuilder.getNode(varIdentifier);
+
         return {
             instruction: "VariableRead",
             context: {
                 identifier: this.arg,
+                type: varNode!.context.type,
             },
         };
     }

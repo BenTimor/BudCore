@@ -1,19 +1,22 @@
-import { ASTBuilder, InstructionNode, InstructionParser } from "engine";
+import { ASTBuilder, InstructionNode, InstructionParser, ReturnedInstructionNode } from "engine";
 import { VariablesInstructions } from "./variables";
 import { PrimitivesInstructions } from "./primitives";
 import { Injections } from "../injections";
 import { ExtrasInstructions } from "./extras";
+import { Types } from "../types";
 
-export type Instructions = 
+export type Instructions =
     | VariablesInstructions
     | PrimitivesInstructions
     | ExtrasInstructions;
 
-export abstract class InternalInstructionParser extends InstructionParser<Instructions, Injections> {}
+export type InternalInstructionNode = InstructionNode<Instructions, { type: Types } & Record<string, any>>;
 
-export type InternalInstructionNode = InstructionNode<Instructions>;
+export type ReturnedInternalInstructionNode = ReturnedInstructionNode<InternalInstructionNode>;
 
-export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> {}
+export abstract class InternalInstructionParser extends InstructionParser<InternalInstructionNode, Instructions, Injections> { }
+
+export class InternalASTBuilder extends ASTBuilder<InternalInstructionNode, Instructions, Injections> { }
 
 export * from "./variables";
 export * from "./primitives";

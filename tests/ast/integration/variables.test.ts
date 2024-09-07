@@ -1,11 +1,10 @@
 import { describe, test, expect } from "vitest";
-import { astBuilderFactory } from "../../../src";
+import { buildAST } from "../../../src";
 
 describe('AST Data In Variables', () => {
     test("should assign correct number to variable", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a = 1";
-        const ast = astBuilder.fromContent(code);
+        const code = "set a = 1;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(1);
 
@@ -25,9 +24,8 @@ describe('AST Data In Variables', () => {
     });
 
     test("Multiple variables should be assigned", () => {
-        const code = "set a = 1\nset b = 2";
-        const astBuilder = astBuilderFactory();
-        const ast = astBuilder.fromContent(code);
+        const code = "set a = 1;\nset b = 2;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(2);
         ast.forEach(node => expect(node.instruction).toBe("VariableDeclaration"));

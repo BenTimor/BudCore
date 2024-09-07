@@ -1,4 +1,4 @@
-import { InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser } from "../../../types";
 import { ExtrasInstructions } from "../../../types/instructions/extras";
 
 export class SemicolonParser extends InternalInstructionParser {
@@ -8,9 +8,12 @@ export class SemicolonParser extends InternalInstructionParser {
         return this.arg === ";";
     }
 
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "Semicolon",
+            context: {
+                type: "void",
+            }
         };
     }
 }

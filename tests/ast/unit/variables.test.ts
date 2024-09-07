@@ -1,11 +1,10 @@
 import { describe, test, expect } from "vitest";
-import { astBuilderFactory } from "../../../src";
+import { buildAST } from "../../../src";
 
 describe('AST Variables', () => {
     test("should parse variable declaration", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a = 1";
-        const ast = astBuilder.fromContent(code);
+        const code = "set a = 1;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(1);
 
@@ -20,15 +19,13 @@ describe('AST Variables', () => {
     });
 
     test("shouldn't allow variable redeclaration", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a = 1\nset a = 2";
-        expect(() => astBuilder.fromContent(code)).toThrow();
+        const code = "set a = 1;\nset a = 2;";
+        expect(() => buildAST(code)).toThrow();
     });
 
     test("Assign variable to another variable", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a = 1\nset b = a";
-        const ast = astBuilder.fromContent(code);
+        const code = "set a = 1;\nset b = a;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(2);
 
@@ -43,27 +40,23 @@ describe('AST Variables', () => {
     });
 
     test("Shouldn't read not existing variable", () => {
-        const astBuilder = astBuilderFactory();
         const code = "a";
-        expect(() => astBuilder.fromContent(code)).toThrow();
+        expect(() => buildAST(code)).toThrow();
     });
 
     test("Shouldn't read variable before declaration", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "a\nset a = 1";
-        expect(() => astBuilder.fromContent(code)).toThrow();
+        const code = "a\nset a = 1;";
+        expect(() => buildAST(code)).toThrow();
     });
 
     test("Shouldn't set variable without equals sign", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a 1";
-        expect(() => astBuilder.fromContent(code)).toThrow();
+        const code = "set a 1;";
+        expect(() => buildAST(code)).toThrow();
     });
 
     test("Set mutable variable", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set mut a = 1";
-        const ast = astBuilder.fromContent(code);
+        const code = "set mut a = 1 ;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(1);
 
@@ -79,9 +72,8 @@ describe('AST Variables', () => {
     });
 
     test("Change mutable variable", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set mut a = 1\na = 2";
-        const ast = astBuilder.fromContent(code);
+        const code = "set mut a=1 ;\na = 2;";
+        const ast = buildAST(code);
 
         expect(ast.length).toBe(2);
 
@@ -96,8 +88,17 @@ describe('AST Variables', () => {
     });
 
     test("Change immutable variable", () => {
-        const astBuilder = astBuilderFactory();
-        const code = "set a = 1\na = 2";
-        expect(() => astBuilder.fromContent(code)).toThrow();
+        const code = "set a = 1;\na = 2;";
+        expect(() => buildAST(code)).toThrow();
+    });
+
+    test("Shouldn't set variable without semicolon", () => {
+        const code = "set a = 1";
+        expect(() => buildAST(code)).toThrow();
+    });
+
+    test("Shouldn't change variable without semicolon", () => {
+        const code = "set a = 1;\na = 2";
+        expect(() => buildAST(code)).toThrow();
     });
 });

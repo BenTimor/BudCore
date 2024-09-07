@@ -1,25 +1,22 @@
 import { nanoid } from "nanoid";
-import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class DeclarationParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableDeclaration";
-    
+
     check(): boolean {
         return this.arg === "set";
     }
-    
-    handle(): InternalInstructionNode {
-        this.limitNext = ["VariableName", "VariableMutable"];
 
-        const next = this.next();
+    handle(): ReturnedInternalInstructionNode {
+        const next = this.next(["VariableName", "VariableMutable"]);
 
         let mutable: boolean = false;
         let nameNode: typeof next;
 
-        if (next?.instruction === "VariableMutable") {            
-            this.limitNext = ["VariableName"];
+        if (next?.instruction === "VariableMutable") {
             mutable = true;
-            nameNode = this.next();
+            nameNode = this.next(["VariableName"]);
         }
         else {
             nameNode = next;
@@ -29,27 +26,25 @@ export class DeclarationParser extends InternalInstructionParser {
             throw new Error("Invalid variable name");
         }
 
-        const name = nameNode.context!.name;
-        
+        const name = nameNode.context.name;
+
         const exists = this.injection.memory.get(`VAR_${name}`, true);
 
         if (exists) {
             throw new Error("Variable already exists");
         }
 
-        this.limitNext = ["Equals"];
-
-        if (this.next()?.instruction !== "Equals") {
+        if (this.next(["Equals"])?.instruction !== "Equals") {
             throw new Error("Invalid variable declaration");
         }
 
-        this.clearLimitNext();
+        const values = this.nextChildren(undefined, ["Semicolon"]);        
 
-        const value = this.next();
-
-        if (!value) {
+        if (!values || values.length != 2) {
             throw new Error("Invalid variable value");
         }
+
+        const value = values[0];
 
         let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
 
@@ -58,7 +53,7 @@ export class DeclarationParser extends InternalInstructionParser {
             identifier = `VAR_DECLARATION_${nanoid()}`;
         }
 
-        this.injection.memory.set(`VAR_${name}`, identifier, true); // TODO: We'll have scope issues here, we need to rethink this
+        this.injection.memory.set(`VAR_${name}`, identifier, true);
 
         return {
             instruction: "VariableDeclaration",
@@ -67,6 +62,7 @@ export class DeclarationParser extends InternalInstructionParser {
                 name: name,
                 mutable,
                 value: value,
+                type: value.context.type,
             },
         };
     }

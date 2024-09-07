@@ -1,14 +1,13 @@
-import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class AssignmentParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableAssignment";
 
     check(): boolean {
-        this.limitNext = ["Equals"];
-        return this.next()?.instruction === "Equals";
+        return this.next(["Equals"])?.instruction === "Equals";
     }
 
-    handle(): InternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode {
         const variableName = this.arg;
 
         const varIdentifier = this.injection.memory.get(`VAR_${variableName}`, false);
@@ -23,23 +22,22 @@ export class AssignmentParser extends InternalInstructionParser {
             throw new Error(`Variable ${variableName} is not mutable`);
         }
 
-        this.limitNext = ["Equals"];
+        this.next(["Equals"]); // Skip the equals sign
 
-        this.next(); // Skip the equals sign
+        const values = this.nextChildren(undefined, ["Semicolon"]);        
 
-        this.clearLimitNext();
-
-        const value = this.next();
-
-        if (!value) {
-            throw new Error("Syntax error");
+        if (!values || values.length != 2) {
+            throw new Error("Invalid variable value");
         }
+
+        const value = values[0];
 
         return {
             instruction: "VariableAssignment",
             context: {
                 name: variableName,
-                value: value.context!.value,
+                type: value.context.type,
+                value: value,
             },
         };
     }
