@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { InternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class DeclarationParser extends InternalInstructionParser {
@@ -13,24 +14,24 @@ export class DeclarationParser extends InternalInstructionParser {
         const next = this.next();
 
         let mutable: boolean = false;
-        let name: typeof next;
+        let nameNode: typeof next;
 
         if (next?.instruction === "VariableMutable") {            
             this.limitNext = ["VariableName"];
             mutable = true;
-            name = this.next();
+            nameNode = this.next();
         }
         else {
-            name = next;
+            nameNode = next;
         }
 
-        if (name?.instruction !== "VariableName") {
+        if (nameNode?.instruction !== "VariableName") {
             throw new Error("Invalid variable name");
         }
 
-        const identifier = name.context!.name;
+        const name = nameNode.context!.name;
         
-        const exists = this.injection.memory.get(`VAR_${identifier}`, true);
+        const exists = this.injection.memory.get(`VAR_${name}`, true);
 
         if (exists) {
             throw new Error("Variable already exists");
@@ -50,13 +51,20 @@ export class DeclarationParser extends InternalInstructionParser {
             throw new Error("Invalid variable value");
         }
 
-        this.injection.memory.set(`VAR_${identifier}`, `VAR_DECLARATION_${identifier}`, true); // TODO: We'll have scope issues here, we need to rethink this
+        let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
+
+        // Ensure the identifier is unique
+        while (this.astBuilder.getNode(identifier)) {
+            identifier = `VAR_DECLARATION_${nanoid()}`;
+        }
+
+        this.injection.memory.set(`VAR_${name}`, identifier, true); // TODO: We'll have scope issues here, we need to rethink this
 
         return {
             instruction: "VariableDeclaration",
-            identifier: `VAR_DECLARATION_${identifier}`,
+            identifier: identifier,
             context: {
-                name: identifier,
+                name: name,
                 mutable,
                 value: value,
             },

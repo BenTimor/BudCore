@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "engine": "link:..\\engine"
+    "engine": "link:..\\engine",
+    "nanoid": "^5.0.7"
   },
   "devDependencies": {
     "@types/node": "^22.5.4",
