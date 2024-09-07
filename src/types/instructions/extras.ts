@@ -3,4 +3,7 @@ export type ExtrasInstructions =
     | "Equals"
     | "Operator"
     | "Parentheses"
-    | "ParenthesesEnd";
+    | "ParenthesesEnd"
+    | "Proxy"
+    | "Block"
+    | "BlockEnd";

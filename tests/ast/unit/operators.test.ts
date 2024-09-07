@@ -191,4 +191,21 @@ describe('AST Multiple Operators Happy Flow', () => {
         expect(context.right.context.right.context.left.context.value).toBe(5);
         expect(context.right.context.right.context.right.context.value).toBe(6);
     });
+
+    test("Should calculate correctly with parentheses", () => {
+        const code = "(1 + 2) * 3 / (4 % 5) ^ 6";
+        const ast = buildAST(code);
+
+        expect(ast.length).toBe(1);
+
+        const operatorNode = ast[0];
+
+        expect(operatorNode.instruction).toBe("Operator");
+
+        expect(operatorNode.context.left.context.left.instruction).toBe("Parentheses");
+        expect(operatorNode.context.left.context.left.context.children[0].context.function).toBe("NativeNumberAdd");
+
+        expect(operatorNode.context.right.context.left.instruction).toBe("Parentheses");
+        expect(operatorNode.context.right.context.left.context.children[0].context.function).toBe("NativeNumberModulo");
+    });
 });

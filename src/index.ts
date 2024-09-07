@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions } from "./instructions/variables";
-import { InternalASTBuilder, InternalInstructionNode, InternalInstructionParser } from "./types";
+import { InternalASTBuilder, InternalInstructionNode } from "./types";
 import { Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
 
@@ -44,6 +44,8 @@ const stringsToSpaceOut = [
     ";",
     "(",
     ")",
+    "{",
+    "}",
 ]
 
 export function buildAST(content: string) {
@@ -62,7 +64,7 @@ function recursiveLogOperatorsOrder(nodes: InternalInstructionNode[]) {
         else {
             const values = Object.values(node.context);
 
-            values.forEach((value) => {
+            values.forEach((value: any) => {
                 if (value.instruction === "Operator") {
                     recursiveLogOperatorOrder(value);
                 }

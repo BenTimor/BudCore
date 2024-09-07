@@ -1,8 +1,8 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src";
 
-describe("Numbers", () => {
-    test("should parse numbers", () => {
+describe("AST Numbers", () => {
+    test("Should parse numbers", () => {
         const code = "1";
         const ast = buildAST(code);
 
