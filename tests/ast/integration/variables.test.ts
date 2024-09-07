@@ -30,4 +30,46 @@ describe('AST Data In Variables', () => {
         expect(ast.length).toBe(2);
         ast.forEach(node => expect(node.instruction).toBe("VariableDeclaration"));
     });
+
+    test("Assigning numbers with operations to variable", () => {
+        const code = "set a = 1 + 2;";
+        const ast = buildAST(code);
+
+        expect(ast.length).toBe(1);
+
+        const varNode = ast[0];
+
+        expect(varNode.instruction).toBe("VariableDeclaration");
+
+        const varContext = varNode.context;
+
+        expect(varContext).toBeDefined();
+        expect(varContext.value.instruction).toBe("Operator");
+
+        const operatorContext = varContext.value.context;
+
+        expect(operatorContext.function).toBe("NativeNumberAdd");
+    });
+
+    test("Performing operations on variables", () => {
+        const code = "set a = 1;\nset b = 2;\nset c = a + b;";
+        const ast = buildAST(code);
+
+        expect(ast.length).toBe(3);
+
+        const varNode = ast[2];
+
+        expect(varNode.instruction).toBe("VariableDeclaration");
+
+        const varContext = varNode.context;
+
+        expect(varContext).toBeDefined();
+        expect(varContext.value.instruction).toBe("Operator");
+
+        const operatorContext = varContext.value.context;
+
+        expect(operatorContext.function).toBe("NativeNumberAdd");
+        expect(operatorContext.left.instruction).toBe("VariableRead");
+        expect(operatorContext.right.instruction).toBe("VariableRead");
+    });
 });

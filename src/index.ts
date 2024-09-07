@@ -72,7 +72,7 @@ if (require.main === module) {
     const resp = buildAST(content.toString());
 
     // recursiveLogOperatorsOrder(resp[0].context.value);
-    recursiveLogOperatorsOrder(resp[0]);
+    // recursiveLogOperatorsOrder(resp[0]);
 
     writeFileSync("ast.json", JSON.stringify(resp, null, 2));
 }
