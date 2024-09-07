@@ -4,6 +4,7 @@ export type NativeOperator = {
     precedence: number;
     leftType: Types;
     rightType: Types;
+    returnType: Types;
     functionIdentifier: string;
 };
 

@@ -39,7 +39,7 @@ export class OperatorParser extends InternalInstructionParser {
                     context: {
                         left: left,
                         right: right,
-                        type: "number", // TODO Use the function identifier to get the type
+                        type: operator.returnType,
                         precedence: operator.precedence,
                         function: operator.functionIdentifier,
                     },
@@ -63,7 +63,7 @@ export class OperatorParser extends InternalInstructionParser {
                     context: {
                         left: current.context.right,
                         right: right,
-                        type: "number", // TODO Use the function identifier to get the type
+                        type: operator.returnType,
                         precedence: operator.precedence,
                         function: operator.functionIdentifier,
                     },
@@ -78,7 +78,7 @@ export class OperatorParser extends InternalInstructionParser {
                 context: {
                     left: left,
                     right: right,
-                    type: "number", // TODO Use the function identifier to get the type
+                    type: operator.returnType,
                     precedence: operator.precedence,
                     function: operator.functionIdentifier,
                 },
