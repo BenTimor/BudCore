@@ -203,9 +203,9 @@ describe('AST Multiple Operators Happy Flow', () => {
         expect(operatorNode.instruction).toBe("Operator");
 
         expect(operatorNode.context.left.context.left.instruction).toBe("Parentheses");
-        expect(operatorNode.context.left.context.left.context.children[0].context.function).toBe("NativeNumberAdd");
+        expect(operatorNode.context.left.context.left.context.value.context.function).toBe("NativeNumberAdd");
 
         expect(operatorNode.context.right.context.left.instruction).toBe("Parentheses");
-        expect(operatorNode.context.right.context.left.context.children[0].context.function).toBe("NativeNumberModulo");
+        expect(operatorNode.context.right.context.left.context.value.context.function).toBe("NativeNumberModulo");
     });
 });

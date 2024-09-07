@@ -1,3 +1,5 @@
 export type Types =
     | "void" 
-    | "number";
+    | "number"
+    | "function"
+    | "any";

@@ -4,11 +4,13 @@ import { PrimitivesInstructions } from "./primitives";
 import { Injections } from "../injections";
 import { ExtrasInstructions } from "./extras";
 import { Types } from "../types";
+import { FunctionsInstructions } from "./functions";
 
 export type Instructions =
     | VariablesInstructions
     | PrimitivesInstructions
-    | ExtrasInstructions;
+    | ExtrasInstructions
+    | FunctionsInstructions;
 
 export type InternalInstructionNode = InstructionNode<Instructions, { type: Types } & Record<string, any>>;
 

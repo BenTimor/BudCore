@@ -5,11 +5,13 @@ import { variablesInstructions } from "./instructions/variables";
 import { InternalASTBuilder, InternalInstructionNode } from "./types";
 import { Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
+import { functionsInstructions } from "./instructions/functions";
 
 function astBuilderFactory() {
     return new InternalASTBuilder([
         ...variablesInstructions,
         ...primitivesInstructions,
+        ...functionsInstructions,
         ...extrasInstructions,
     ], {
         memory: new Memory(),

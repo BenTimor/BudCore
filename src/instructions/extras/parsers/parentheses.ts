@@ -31,11 +31,15 @@ export class ParenthesesParser extends InternalInstructionParser {
 
         children.pop(); // Remove the last element, which is the closing parenthesis
 
+        if (children.length !== 1) {
+            throw new Error("Parentheses must contain exactly one element");
+        }
+
         return {
             instruction: "Parentheses",
             context: {
-                type: children.length === 1 ? children[0].context.type : "void",
-                children,
+                type: children[0].context.type,
+                value: children[0],
             },
         };
     }
