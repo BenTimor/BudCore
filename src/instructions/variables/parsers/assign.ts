@@ -36,6 +36,7 @@ export class AssignmentParser extends InternalInstructionParser {
             instruction: "VariableAssignment",
             context: {
                 name: variableName,
+                identifier: varIdentifier,
                 type: value.context.type,
                 value: value,
             },

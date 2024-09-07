@@ -15,7 +15,8 @@ export class ReadParser extends InternalInstructionParser {
         return {
             instruction: "VariableRead",
             context: {
-                identifier: this.arg,
+                name: this.arg,
+                identifier: varIdentifier,
                 type: varNode!.context.type,
             },
         };

@@ -60,6 +60,7 @@ export class DeclarationParser extends InternalInstructionParser {
             identifier: identifier,
             context: {
                 name: name,
+                identifier,
                 mutable,
                 value: value,
                 type: value.context.type,

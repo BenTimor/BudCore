@@ -1,7 +1,8 @@
+#!/usr/bin/env node
 import { readFileSync, writeFileSync } from "fs";
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions } from "./instructions/variables";
-import { InternalASTBuilder, InternalInstructionNode } from "./types";
+import { InternalASTBuilder, InternalInstructionNode, InternalInstructionParser } from "./types";
 import { Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
 
@@ -51,28 +52,56 @@ export function buildAST(content: string) {
     return ast;
 }
 
-function recursiveLogOperatorsOrder(node: InternalInstructionNode, tabs: number = 0) {
-    console.log(" ".repeat(tabs) + (node.context.function || node.context.value));
+function recursiveLogOperatorsOrder(nodes: InternalInstructionNode[]) {
+    nodes.forEach((node) => {
+        if (node.instruction === "Operator") {
+            recursiveLogOperatorOrder(node);
+        }
+        else {
+            const values = Object.values(node.context);
 
-    if (node.instruction === "Operator") {
-        recursiveLogOperatorsOrder(node.context.left, tabs + 2);
-        recursiveLogOperatorsOrder(node.context.right, tabs + 2);
-    }
+            values.forEach((value) => {
+                if (value.instruction === "Operator") {
+                    recursiveLogOperatorOrder(value);
+                }
+                else if (!!value.instruction) {
+                    recursiveLogOperatorsOrder([value]);
+                }
+            });
+        }
+    });
 }
 
-if (require.main === module) {
-    const file = process.argv[2];
+function recursiveLogOperatorOrder(node: InternalInstructionNode, tabs: number = 0) {
+    console.log(" ".repeat(tabs) + (node.context.function || node.context.value || node.context.name));
 
+    if (!node.context.left || !node.context.right) {
+        return
+    }
+
+    recursiveLogOperatorOrder(node.context.left, tabs + 2);
+    recursiveLogOperatorOrder(node.context.right, tabs + 2);
+}
+
+if (require.main === module) {    
+    const cmd = process.argv[2];
+    const file = process.argv[3];
     if (!file) {
         throw new Error("File not found");
-    }
+    }    
 
     const content = readFileSync(file);
 
-    const resp = buildAST(content.toString());
+    switch (cmd) {
+        case "compile":
+            const resp = buildAST(content.toString());
 
-    // recursiveLogOperatorsOrder(resp[0].context.value);
-    // recursiveLogOperatorsOrder(resp[0]);
+            writeFileSync("ast.json", JSON.stringify(resp, null, 2));
+            break;
+        case "print-operations":
+            const json = JSON.parse(content.toString());
 
-    writeFileSync("ast.json", JSON.stringify(resp, null, 2));
+            recursiveLogOperatorsOrder(json);
+            break;
+    }
 }
