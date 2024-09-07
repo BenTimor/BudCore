@@ -1,4 +1,6 @@
 export type ExtrasInstructions =
     | "Semicolon"
     | "Equals"
-    | "Operator";
+    | "Operator"
+    | "Parentheses"
+    | "ParenthesesEnd";
