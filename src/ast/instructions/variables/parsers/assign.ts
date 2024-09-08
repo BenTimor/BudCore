@@ -1,4 +1,5 @@
-import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { VariablesInstructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class AssignmentParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableAssignment";

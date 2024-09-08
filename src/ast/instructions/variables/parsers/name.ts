@@ -1,5 +1,6 @@
+import { VariablesInstructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 import { Reserved } from "../../../reserved";
-import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
 
 export class NameParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableName";

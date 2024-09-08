@@ -1,6 +1,6 @@
-import { ReturnedInstructionNode } from "engine";
-import { Instructions, InternalInstructionNode, InternalInstructionParser } from "../../../types";
 import { nativeFunctions } from "../../../native";
+import { Instructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class FunctionReadParser extends InternalInstructionParser {
     instruction: Instructions = "FunctionRead";
@@ -9,7 +9,7 @@ export class FunctionReadParser extends InternalInstructionParser {
         return nativeFunctions[this.arg] !== undefined;
     }
 
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         const nativeFunction = nativeFunctions[this.arg];
 
         return {

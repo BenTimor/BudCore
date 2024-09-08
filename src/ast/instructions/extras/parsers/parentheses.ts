@@ -1,5 +1,5 @@
-import { ReturnedInstructionNode } from "engine";
-import { Instructions, InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { Instructions } from "../../../../types";
+import { InternalInstructionParser, InternalInstructionNode, ReturnedInternalInstructionNode } from "../../../types";
 
 export class ParenthesesEndParser extends InternalInstructionParser {
     limited: boolean = true;
@@ -9,7 +9,7 @@ export class ParenthesesEndParser extends InternalInstructionParser {
         return this.arg === ")";
     }
     
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "ParenthesesEnd",
             context: {
@@ -26,7 +26,7 @@ export class ParenthesesParser extends InternalInstructionParser {
         return this.arg === "(";
     }
     
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         const children = this.nextChildren(undefined, ["ParenthesesEnd"]);
 
         children.pop(); // Remove the last element, which is the closing parenthesis

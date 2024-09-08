@@ -1,5 +1,6 @@
-import { Instructions, ReturnedInternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { Instructions } from "../../../../types";
 import { nativeOperators } from "../../../native";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class OperatorParser extends InternalInstructionParser {
     instruction: Instructions = "Operator";

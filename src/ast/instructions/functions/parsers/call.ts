@@ -1,5 +1,5 @@
-import { ReturnedInstructionNode } from "engine";
-import { Instructions, InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { Instructions } from "../../../../types";
+import { InternalInstructionNode, InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 import { nativeFunctions } from "../../../native";
 
 export class FunctionCallParser extends InternalInstructionParser {
@@ -9,7 +9,7 @@ export class FunctionCallParser extends InternalInstructionParser {
         return this.arg === "(" && this.astBuilder.nodes[this.astBuilder.nodes.length - 1]?.context.type === "function";
     }
 
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         let children = this.nextChildren(undefined, ["ParenthesesEnd"]);
 
         children.pop(); // Remove the last element, which is the closing parenthesis

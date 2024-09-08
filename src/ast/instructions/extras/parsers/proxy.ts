@@ -1,5 +1,5 @@
-import { ReturnedInstructionNode } from "engine";
-import { Instructions, InternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { Instructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class ProxyParser extends InternalInstructionParser {
     instruction: Instructions = "Proxy";
@@ -8,7 +8,7 @@ export class ProxyParser extends InternalInstructionParser {
         return this.arg === "proxy";
     }
 
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         const reference = this.next(["VariableRead"]);
 
         if (!reference) {

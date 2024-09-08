@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import { ReturnedInternalInstructionNode, InternalInstructionParser, VariablesInstructions } from "../../../types";
+import { VariablesInstructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class DeclarationParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableDeclaration";

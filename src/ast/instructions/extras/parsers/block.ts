@@ -1,5 +1,5 @@
-import { ReturnedInstructionNode } from "engine";
-import { Instructions, InternalInstructionNode, InternalInstructionParser } from "../../../types"
+import { Instructions } from "../../../../types";
+import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
 export class BlockEndParser extends InternalInstructionParser {
     instruction: Instructions = "BlockEnd";
@@ -8,7 +8,7 @@ export class BlockEndParser extends InternalInstructionParser {
         return this.arg === "}";
     }
 
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         return {
             instruction: this.instruction,
             context: {
@@ -25,7 +25,7 @@ export class BlockParser extends InternalInstructionParser {
         return this.arg === "{";
     }
 
-    handle(): ReturnedInstructionNode<InternalInstructionNode> {
+    handle(): ReturnedInternalInstructionNode {
         const children = this.nextChildren(undefined, ["BlockEnd"]);
 
         children.pop(); // Remove the BlockEnd
