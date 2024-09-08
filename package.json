@@ -2,7 +2,7 @@
   "name": "core",
   "version": "1.0.0",
   "description": "",
-  "main": "build/ast/index.js",
+  "main": "build/generator/index.js",
   "scripts": {
     "test": "vitest run",
     "build": "tsc",
@@ -12,7 +12,8 @@
   "bin": {
     "ast": "build/ast/index.js",
     "compile": "build/index.js",
-    "print-operations": "build/ast/index.js"
+    "print-operations": "build/ast/index.js",
+    "generate": "build/generator/index.js"
   },
   "keywords": [],
   "author": "",
