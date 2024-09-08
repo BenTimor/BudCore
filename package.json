@@ -2,7 +2,7 @@
   "name": "core",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "build/ast/index.js",
   "scripts": {
     "test": "vitest run",
     "build": "tsc",
@@ -10,8 +10,9 @@
     "start": "node build/index.js"
   },
   "bin": {
+    "ast": "build/ast/index.js",
     "compile": "build/index.js",
-    "print-operations": "build/index.js"
+    "print-operations": "build/ast/index.js"
   },
   "keywords": [],
   "author": "",

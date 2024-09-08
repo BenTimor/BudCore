@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { buildAST } from "../../../src";
+import { buildAST } from "../../../src/ast";
 
 describe('AST Variables', () => {
     test("should parse variable declaration", () => {
