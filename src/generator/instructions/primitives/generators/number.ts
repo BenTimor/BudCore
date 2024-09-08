@@ -7,6 +7,6 @@ export class NumberGenerator extends InternalInstructionGenerator {
     }
 
     async handle(node: InternalInstructionNode): Promise<string> {
-        return node.context.value;
+        return `${node.context.value}`;
     }
 }

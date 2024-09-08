@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-import { readFileSync, writeFileSync } from "fs";
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions } from "./instructions/variables";
-import { InternalASTBuilder, InternalInstructionNode } from "./types";
+import { InternalASTBuilder } from "./types";
 import { Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
 import { functionsInstructions } from "./instructions/functions";
@@ -56,87 +54,4 @@ export function buildAST(content: string) {
     const ast = astBuilder.fromContent(addSpacesAroundMatches(content, stringsToSpaceOut));
 
     return ast;
-}
-
-function recursiveLogOperatorsOrder(nodes: InternalInstructionNode[]) {
-    nodes.forEach((node) => {
-        if (node.instruction === "Operator") {
-            recursiveLogOperatorOrder(node);
-        }
-        else {
-            const values = Object.values(node.context);
-
-            values.forEach((value: any) => {
-                if (value.instruction === "Operator") {
-                    recursiveLogOperatorOrder(value);
-                }
-                else if (!!value.instruction) {
-                    recursiveLogOperatorsOrder([value]);
-                }
-            });
-        }
-    });
-}
-
-function recursiveLogOperatorOrder(node: InternalInstructionNode, tabs: number = 0) {
-    console.log(" ".repeat(tabs) + (node.context.function || node.context.value || node.context.name || node.instruction));
-
-    if (node.instruction === "Parentheses") {
-        node.context.children.forEach((child: any) => {
-            recursiveLogOperatorOrder(child, tabs + 2);
-        });
-    }
-
-    if (!node.context.left || !node.context.right) {
-        return;
-    }
-
-    recursiveLogOperatorOrder(node.context.left, tabs + 2);
-    recursiveLogOperatorOrder(node.context.right, tabs + 2);
-}
-
-function recursiveLogAST(node: InternalInstructionNode, tabs: number = 0) {
-    console.log(" ".repeat(tabs) + node.instruction);
-
-    const entries = Object.entries(node.context);
-
-    for (const [key, value] of entries) {
-        if (!!value.instruction) {
-            recursiveLogAST(value, tabs + 2);
-        }
-        else if (Array.isArray(value) && value[0].instruction) {
-            value.forEach((val) => {
-                recursiveLogAST(val, tabs + 2);
-            });
-        }
-        else {
-            console.log(" ".repeat(tabs + 2) + `${key}: ${JSON.stringify(value)}`);
-        }
-    }
-}
-
-if (require.main === module) {    
-    const cmd = process.argv[2];
-    const file = process.argv[3];
-    if (!file) {
-        throw new Error("File not found");
-    }    
-
-    const content = readFileSync(file);
-
-    switch (cmd) {
-        case "ast":
-            const resp = buildAST(content.toString());
-
-            writeFileSync("ast.json", JSON.stringify(resp, null, 2));
-            resp.forEach((node) => {
-                recursiveLogAST(node);
-            });
-            break;
-        case "print-operations":
-            const json = JSON.parse(content.toString());
-
-            recursiveLogOperatorsOrder(json);
-            break;
-    }
 }
