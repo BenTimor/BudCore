@@ -1,16 +1,36 @@
-export class Memory {
-    private static memory: Map<string, any> = new Map([
-        ["NativeLog", ({ values }: { values: any[] }) => {
-            console.log(...values);
+export interface VariableProxy {
+    get(): any;
+    set(value: any): any;
+}
+
+export class Variables {
+    private static variables: Map<string, VariableProxy> = new Map([
+        ["NativeLog", new class implements VariableProxy {
+            get() {
+                return (args: any) => console.log(...args.values);
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
         }]
     ]);
 
     static get(key: string) {
-        return Memory.memory.get(key);
+        return Variables.variables.get(key)?.get();
     }
 
     static set(key: string, value: any) {
-        Memory.memory.set(key, value);
+        Variables.variables.set(key, new class implements VariableProxy { // TODO Add type safety and immutability
+            private value = value;
+
+            get() {
+                return this.value;
+            }
+            set(newValue: any) {
+                this.value = newValue;
+                return value;
+            }
+        });
         return value;
     }
 }

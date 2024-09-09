@@ -36,6 +36,6 @@ export class CallGenerator extends InternalInstructionGenerator {
 
         argsStrBuilder.push("}");
 
-        return `Bud.Memory.get("${node.context.identifier}")(${argsStrBuilder.join(" ")})`;
+        return `Bud.Variables.get("${node.context.identifier}")(${argsStrBuilder.join(" ")})`;
     }
 }

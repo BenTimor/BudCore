@@ -13,7 +13,7 @@ function recursiveLogAST(node: InternalInstructionNode, tabs: number = 0) {
     const entries = Object.entries(node.context as any) as [string, any][];
 
     for (const [key, value] of entries) {
-        if ("instruction" in value) {
+        if (typeof value === "object" && "instruction" in value) {
             recursiveLogAST(value, tabs + 2);
         }
         else if (Array.isArray(value) && value[0].instruction) {

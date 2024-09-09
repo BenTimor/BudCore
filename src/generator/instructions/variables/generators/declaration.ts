@@ -8,6 +8,6 @@ export class DeclarationGenerator extends InternalInstructionGenerator {
 
     async handle(node: InternalInstructionNode<Context["VariableDeclaration"]>) {
         const value = await this.generator.generateOne(node.context.value);
-        return `Bud.Memory.set("${node.context.identifier}", ${value})`;
+        return `Bud.Variables.set("${node.context.identifier}", ${value})`;
     }
 }

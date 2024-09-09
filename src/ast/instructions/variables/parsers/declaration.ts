@@ -68,7 +68,7 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
                 identifier,
                 mutable,
                 value: value,
-                type: value.context.type,
+                variableType: value.context.type,
             },
         };
     }

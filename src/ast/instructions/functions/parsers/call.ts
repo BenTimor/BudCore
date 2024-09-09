@@ -1,6 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { nativeFunctions } from "../../../native";
+import { nativeFunctions } from "../../../native/functions";
 
 export class FunctionCallParser extends InternalInstructionParser<Context["FunctionCall"]> {
     instruction: Instructions = "FunctionCall";
@@ -102,7 +102,7 @@ export class FunctionCallParser extends InternalInstructionParser<Context["Funct
         return {
             instruction: "FunctionCall",
             context: {
-                identifier: nativeFunction.identifier,
+                identifier: functionReference.context.identifier,
                 args,
                 type: nativeFunction.returnType,
             },

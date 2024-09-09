@@ -1,2 +1,7 @@
+import { nativeFunctions } from "./functions";
+
 export * from "./operators";
-export * from "./functions";
+
+export const nativeVariables = {
+    ...nativeFunctions,
+};

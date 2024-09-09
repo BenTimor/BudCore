@@ -43,7 +43,8 @@ export type Context = {
         value: InternalInstructionNode<any>;
         name: string;
         mutable: boolean;
-    } & TypedContext,
+        variableType: Types;
+    },
     VariableName: {
         name: string;
     },

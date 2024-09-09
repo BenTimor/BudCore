@@ -7,7 +7,6 @@ export type NativeFunctionArg = {
 };
 
 export type NativeFunction = {
-    identifier: string;
     args: NativeFunctionArg[];
     returnType: Types;
 };
