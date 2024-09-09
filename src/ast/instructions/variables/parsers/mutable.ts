@@ -10,10 +10,7 @@ export class MutableParser extends InternalInstructionParser {
     }
     handle(): ReturnedInternalInstructionNode {
         return {
-            instruction: "VariableMutable",
-            context: {
-                type: "void",
-            }
+            instruction: "VariableMutable"
         };
     }
 }

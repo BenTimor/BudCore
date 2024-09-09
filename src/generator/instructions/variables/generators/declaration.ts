@@ -1,4 +1,4 @@
-import { InternalInstructionNode } from "../../../../ast/types";
+import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
 export class DeclarationGenerator extends InternalInstructionGenerator {
@@ -6,7 +6,7 @@ export class DeclarationGenerator extends InternalInstructionGenerator {
         return node.instruction === "VariableDeclaration";
     }
 
-    async handle(node: InternalInstructionNode) {
+    async handle(node: InternalInstructionNode<Context["VariableDeclaration"]>) {
         const value = await this.generator.generateOne(node.context.value);
         return `Bud.Memory.set("${node.context.identifier}", ${value})`;
     }

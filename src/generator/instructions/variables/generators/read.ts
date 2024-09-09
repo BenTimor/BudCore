@@ -1,4 +1,4 @@
-import { InternalInstructionNode } from "../../../../ast/types";
+import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
 export class ReadGenerator extends InternalInstructionGenerator {
@@ -6,7 +6,7 @@ export class ReadGenerator extends InternalInstructionGenerator {
         return node.instruction === "VariableRead";
     }
 
-    async handle(node: InternalInstructionNode) {
+    async handle(node: InternalInstructionNode<Context["VariableRead"]>) {
         return `Bud.Memory.get("${node.context.identifier}")`;
     }
 }

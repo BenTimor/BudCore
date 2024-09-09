@@ -1,4 +1,4 @@
-import { InternalInstructionNode } from "../../../../ast/types";
+import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
 export class CallGenerator extends InternalInstructionGenerator {
@@ -6,7 +6,7 @@ export class CallGenerator extends InternalInstructionGenerator {
         return node.instruction === "FunctionCall";
     }
 
-    async handle(node: InternalInstructionNode) {
+    async handle(node: InternalInstructionNode<Context["FunctionCall"]>) {
         const argsEntries = Object.entries(node.context.args);
         const newArgsEntries = [];
 

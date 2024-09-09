@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src/ast";
+import { Context } from "../../../src/ast/types";
 
 describe("AST Numbers", () => {
     test("Should parse numbers", () => {
@@ -12,9 +13,9 @@ describe("AST Numbers", () => {
 
         expect(numberNode.instruction).toBe("Number");
 
-        const context = numberNode.context;
+        const context = numberNode.context as Context["Number"];
         
         expect(context).toBeDefined();
-        expect(context!.value).toBe(1);
+        expect(context.value).toBe(1);
     });
 });

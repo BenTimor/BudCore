@@ -11,10 +11,7 @@ export class EqualsParser extends InternalInstructionParser {
 
     handle(): ReturnedInternalInstructionNode {
         return {
-            instruction: "Equals",
-            context: {
-                type: "void",
-            }
+            instruction: "Equals"
         };
     }
 }

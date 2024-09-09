@@ -1,17 +1,17 @@
 import { Instructions } from "../../../../types";
-import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
 
-export class ProxyParser extends InternalInstructionParser {
+export class ProxyParser extends InternalInstructionParser<Context["Proxy"]> {
     instruction: Instructions = "Proxy";
 
     check(): boolean {
         return this.arg === "proxy";
     }
 
-    handle(): ReturnedInternalInstructionNode {
-        const reference = this.next(["VariableRead"]);
+    handle(): ReturnedInternalInstructionNode<Context["Proxy"]> {
+        const variable = this.next(["VariableRead"]);
 
-        if (!reference) {
+        if (!isInstruction(variable, "VariableRead")) {
             throw new Error("Proxy must have a reference");
         }
         
@@ -24,9 +24,8 @@ export class ProxyParser extends InternalInstructionParser {
         return {
             instruction: this.instruction,
             context: {
-                reference,
+                identifier: variable.context.identifier,
                 block,
-                type: "void",
             }
         }
     }

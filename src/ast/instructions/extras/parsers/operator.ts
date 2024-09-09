@@ -1,24 +1,24 @@
 import { Instructions } from "../../../../types";
 import { nativeOperators } from "../../../native";
-import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 
-export class OperatorParser extends InternalInstructionParser {
+export class OperatorParser extends InternalInstructionParser<Context["Operator"]> {
     instruction: Instructions = "Operator";
 
     check(): boolean {
         return !!nativeOperators[this.arg];
     }
 
-    handle(): ReturnedInternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode<Context["Operator"]> {
         const left = this.astBuilder.nodes.pop();
 
-        if (!left) {
+        if (!left || !isTyped(left)) {
             throw new Error("Invalid operator usage");
         }
 
         const right = this.next();
 
-        if (!right) {
+        if (!right || !isTyped(right)) {
             throw new Error("Invalid operator usage");
         }
 
@@ -33,7 +33,7 @@ export class OperatorParser extends InternalInstructionParser {
             throw new Error("Invalid operator usage");
         }
 
-        if (left.instruction === "Operator") {
+        if (isInstruction(left, "Operator")) {
             if (operator.precedence <= left.context.precedence) {
                 return {
                     instruction: "Operator",
@@ -52,7 +52,7 @@ export class OperatorParser extends InternalInstructionParser {
                 while (true) {
                     const next = current.context.right;
 
-                    if (!next || next.instruction !== "Operator" || next.context.precedence >= operator.precedence) {
+                    if (!next || !isInstruction(next, "Operator") || next.context.precedence >= operator.precedence) {
                         break;
                     }
 
@@ -68,6 +68,7 @@ export class OperatorParser extends InternalInstructionParser {
                         precedence: operator.precedence,
                         function: operator.functionIdentifier,
                     },
+                    endsAt: this.nextIndex,
                 };                
 
                 return left;

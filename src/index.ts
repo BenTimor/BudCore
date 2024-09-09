@@ -6,10 +6,14 @@ import { generateFromAST } from "./generator";
 function recursiveLogAST(node: InternalInstructionNode, tabs: number = 0) {
     console.log(" ".repeat(tabs) + node.instruction);
 
-    const entries = Object.entries(node.context);
+    if (!("context" in node)) {
+        return;
+    }
+
+    const entries = Object.entries(node.context as any) as [string, any][];
 
     for (const [key, value] of entries) {
-        if (!!value.instruction) {
+        if ("instruction" in value) {
             recursiveLogAST(value, tabs + 2);
         }
         else if (Array.isArray(value) && value[0].instruction) {

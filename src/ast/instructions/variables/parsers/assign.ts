@@ -1,14 +1,14 @@
 import { VariablesInstructions } from "../../../../types";
-import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 
-export class AssignmentParser extends InternalInstructionParser {
+export class AssignmentParser extends InternalInstructionParser<Context["VariableAssignment"]> {
     instruction: VariablesInstructions = "VariableAssignment";
 
     check(): boolean {
         return this.next(["Equals"])?.instruction === "Equals";
     }
 
-    handle(): ReturnedInternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode<Context["VariableAssignment"]> {
         const variableName = this.arg;
 
         const varIdentifier = this.injection.memory.get(`VAR_${variableName}`, false);
@@ -18,6 +18,10 @@ export class AssignmentParser extends InternalInstructionParser {
         }
 
         const varNode = this.astBuilder.getNode(varIdentifier);        
+
+        if (!isInstruction(varNode, "VariableDeclaration")) {
+            throw new Error(`Variable ${variableName} is not declared`);
+        }
 
         if (!varNode?.context?.mutable) {
             throw new Error(`Variable ${variableName} is not mutable`);
@@ -33,10 +37,13 @@ export class AssignmentParser extends InternalInstructionParser {
 
         const value = values[0];
 
+        if (!isTyped(value)) {
+            throw new Error("Invalid value type");
+        }
+
         return {
             instruction: "VariableAssignment",
             context: {
-                name: variableName,
                 identifier: varIdentifier,
                 type: value.context.type,
                 value: value,

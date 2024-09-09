@@ -11,9 +11,6 @@ export class SemicolonParser extends InternalInstructionParser {
     handle(): ReturnedInternalInstructionNode {
         return {
             instruction: "Semicolon",
-            context: {
-                type: "void",
-            }
         };
     }
 }

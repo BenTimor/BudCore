@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src/ast";
+import { Context, InternalInstructionNode } from "../../../src/ast/types";
 
 describe('AST Data In Variables', () => {
     test("should assign correct number to variable", () => {
@@ -12,12 +13,12 @@ describe('AST Data In Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const varContext = varNode.context;
+        const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
-        expect(varContext!.value.instruction).toBe("Number");
+        expect(varContext.value.instruction).toBe("Number");
 
-        const numberContext = varContext!.value.context;
+        const numberContext = (varContext.value as InternalInstructionNode<Context["Number"]>).context;
 
         expect(numberContext).toBeDefined();
         expect(numberContext!.value).toBe(1);
@@ -41,12 +42,12 @@ describe('AST Data In Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const varContext = varNode.context;
+        const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
         expect(varContext.value.instruction).toBe("Operator");
 
-        const operatorContext = varContext.value.context;
+        const operatorContext = (varContext.value as InternalInstructionNode<Context["Operator"]>).context;
 
         expect(operatorContext.function).toBe("NativeNumberAdd");
     });
@@ -61,12 +62,12 @@ describe('AST Data In Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const varContext = varNode.context;
+        const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
         expect(varContext.value.instruction).toBe("Operator");
 
-        const operatorContext = varContext.value.context;
+        const operatorContext = (varContext.value as InternalInstructionNode<Context["Operator"]>).context;
 
         expect(operatorContext.function).toBe("NativeNumberAdd");
         expect(operatorContext.left.instruction).toBe("VariableRead");

@@ -1,3 +1,2 @@
 export type FunctionsInstructions =
-    | "FunctionCall"
-    | "FunctionRead";
+    | "FunctionCall";

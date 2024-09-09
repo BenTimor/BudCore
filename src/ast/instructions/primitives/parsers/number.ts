@@ -1,13 +1,13 @@
-import { ReturnedInternalInstructionNode, InternalInstructionParser } from "../../../types";
+import { ReturnedInternalInstructionNode, InternalInstructionParser, Context } from "../../../types";
 
-export class NumberParser extends InternalInstructionParser {
+export class NumberParser extends InternalInstructionParser<Context["Number"]> {
     instruction: "Number" = "Number";
     
     check(): boolean {
         return isNaN(+this.arg) === false;
     }
 
-    handle(): ReturnedInternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode<Context["Number"]> {
         return {
             instruction: "Number",
             context: {

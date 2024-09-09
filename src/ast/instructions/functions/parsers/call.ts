@@ -1,15 +1,17 @@
 import { Instructions } from "../../../../types";
-import { InternalInstructionNode, InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 import { nativeFunctions } from "../../../native";
 
-export class FunctionCallParser extends InternalInstructionParser {
+export class FunctionCallParser extends InternalInstructionParser<Context["FunctionCall"]> {
     instruction: Instructions = "FunctionCall";
 
     check(): boolean {
-        return this.arg === "(" && this.astBuilder.nodes[this.astBuilder.nodes.length - 1]?.context.type === "function";
+        const lastNode = this.astBuilder.nodes[this.astBuilder.nodes.length - 1];
+
+        return this.arg === "(" && isInstruction(lastNode, "VariableRead") && lastNode.context.type === "function";
     }
 
-    handle(): ReturnedInternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode<Context["FunctionCall"]> {
         let children = this.nextChildren(undefined, ["ParenthesesEnd"]);
 
         children.pop(); // Remove the last element, which is the closing parenthesis
@@ -18,14 +20,14 @@ export class FunctionCallParser extends InternalInstructionParser {
 
         const functionReference = this.astBuilder.nodes.pop();
 
-        if (!functionReference) {
+        if (!isInstruction(functionReference, "VariableRead")) {
             throw new Error("Function reference is missing while handling function call");
         }
 
-        const nativeFunction = nativeFunctions[functionReference.context.name]; // TODO Take function data from functionReference
+        const nativeFunction = nativeFunctions[functionReference.context.identifier]; // TODO Take function data from functionReference
 
         if (!nativeFunction) {
-            throw new Error(`Function ${functionReference.context.name} is not defined`);
+            throw new Error(`Function ${functionReference.context.identifier} is not defined`);
         }
 
         let allowAnonymousArgs = true;
@@ -36,17 +38,21 @@ export class FunctionCallParser extends InternalInstructionParser {
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
 
-            if (child.instruction === "VariableDeclaration") {
+            if (!isTyped(child)) {
+                throw new Error("Invalid argument type");
+            }
+
+            if (isInstruction(child, "VariableDeclaration")) {
                 allowAnonymousArgs = false;
 
                 const arg = nativeFunction.args.find(arg => arg.name === child.context.name);
 
                 if (!arg) {
-                    throw new Error(`Argument ${child.context.name} is not defined in function ${functionReference.context.name}`);
+                    throw new Error(`Argument ${child.context.name} is not defined in function ${functionReference.context.identifier}`);
                 }
 
                 if (arg.type !== "any" && arg.type !== child.context.type) {
-                    throw new Error(`Argument ${child.context.name} of type ${child.context.type} mismatch in function ${functionReference.context.name}`);
+                    throw new Error(`Argument ${child.context.name} of type ${child.context.type} mismatch in function ${functionReference.context.identifier}`);
                 }
 
                 args[child.context.name] = child.context.value;
@@ -65,7 +71,7 @@ export class FunctionCallParser extends InternalInstructionParser {
                     }
 
                     if (spreadArg.type !== "any" && spreadArg.type !== child.context.type) {
-                        throw new Error(`Argument ${child.context.name} of type ${child.context.type} mismatch in function ${functionReference.context.name}`);
+                        throw new Error(`Argument of type ${child.context.type} mismatch in function ${functionReference.context.identifier}`);
                     }
 
                     if (!args[spreadArg.name]) {
@@ -77,7 +83,7 @@ export class FunctionCallParser extends InternalInstructionParser {
                 }
 
                 if (arg.type !== "any" && arg.type !== child.context.type) {
-                    throw new Error(`Argument ${child.context.name} of type ${child.context.type} mismatch in function ${functionReference.context.name}`);
+                    throw new Error(`Argument type ${child.context.type} mismatch in function ${functionReference.context.identifier}`);
                 }
 
                 if (arg.spread) {
@@ -96,7 +102,6 @@ export class FunctionCallParser extends InternalInstructionParser {
         return {
             instruction: "FunctionCall",
             context: {
-                name: functionReference.context.name,
                 identifier: nativeFunction.identifier,
                 args,
                 type: nativeFunction.returnType,

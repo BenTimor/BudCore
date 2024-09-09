@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src/ast";
+import { Context } from "../../../src/ast/types";
 
 describe('AST One Operator Happy Flow', () => {
     test("Should parse addition", () => {
@@ -12,11 +13,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberAdd");
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.value).toBe(2);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(2);
     });
 
     test("Should parse subtraction", () => {
@@ -29,11 +30,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberSubtract");
-        expect(context.left.context.value).toBe(2);
-        expect(context.right.context.value).toBe(3);
+        expect((context.left as any).context.value).toBe(2);
+        expect((context.right as any).context.value).toBe(3);
     });
 
     test("Should parse multiplication", () => {
@@ -46,11 +47,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberMultiply");
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.value).toBe(1);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(1);
     });
 
     test("Should parse division", () => {
@@ -63,11 +64,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberDivide");
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.value).toBe(5);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(5);
     });
 
     test("Should parse modulo", () => {
@@ -80,11 +81,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberModulo");
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.value).toBe(1);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(1);
     });
 
     test("Should parse power", () => {
@@ -97,11 +98,11 @@ describe('AST One Operator Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberPower");
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.value).toBe(0);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(0);
     });
 });
 
@@ -116,14 +117,14 @@ describe('AST Multiple Operators Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberSubtract");
-        expect(context.left.context.function).toBe("NativeNumberAdd");
+        expect((context.left as any).context.function).toBe("NativeNumberAdd");
 
-        expect(context.left.context.left.context.value).toBe(1);
-        expect(context.left.context.right.context.value).toBe(1);
-        expect(context.right.context.value).toBe(1);
+        expect((context.left as any).context.left.context.value).toBe(1);
+        expect((context.left as any).context.right.context.value).toBe(1);
+        expect((context.right as any).context.value).toBe(1);
     });
 
     test("Should parse multiplication and division", () => {
@@ -136,14 +137,14 @@ describe('AST Multiple Operators Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberDivide");
-        expect(context.left.context.function).toBe("NativeNumberMultiply");
+        expect((context.left as any).context.function).toBe("NativeNumberMultiply");
 
-        expect(context.left.context.left.context.value).toBe(1);
-        expect(context.left.context.right.context.value).toBe(100);
-        expect(context.right.context.value).toBe(1);
+        expect((context.left as any).context.left.context.value).toBe(1);
+        expect((context.left as any).context.right.context.value).toBe(100);
+        expect((context.right as any).context.value).toBe(1);
     });
 
     test("Should parse modulo and power", () => {
@@ -156,14 +157,14 @@ describe('AST Multiple Operators Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberModulo");
-        expect(context.right.context.function).toBe("NativeNumberPower");
+        expect((context.right as any).context.function).toBe("NativeNumberPower");
 
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.left.context.value).toBe(34);
-        expect(context.right.context.right.context.value).toBe(5);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.left.context.value).toBe(34);
+        expect((context.right as any).context.right.context.value).toBe(5);
     });
 
     test("Should parse really complex expression", () => {
@@ -176,20 +177,20 @@ describe('AST Multiple Operators Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        const context = operatorNode.context;
+        const context = operatorNode.context as Context["Operator"];
 
         expect(context.function).toBe("NativeNumberAdd");
-        expect(context.right.context.function).toBe("NativeNumberModulo");
-        expect(context.right.context.left.context.function).toBe("NativeNumberDivide");
-        expect(context.right.context.left.context.left.context.function).toBe("NativeNumberMultiply");
-        expect(context.right.context.right.context.function).toBe("NativeNumberPower");
+        expect((context.right as any).context.function).toBe("NativeNumberModulo");
+        expect((context.right as any).context.left.context.function).toBe("NativeNumberDivide");
+        expect((context.right as any).context.left.context.left.context.function).toBe("NativeNumberMultiply");
+        expect((context.right as any).context.right.context.function).toBe("NativeNumberPower");
 
-        expect(context.left.context.value).toBe(1);
-        expect(context.right.context.left.context.left.context.left.context.value).toBe(2);
-        expect(context.right.context.left.context.left.context.right.context.value).toBe(3);
-        expect(context.right.context.left.context.right.context.value).toBe(4);
-        expect(context.right.context.right.context.left.context.value).toBe(5);
-        expect(context.right.context.right.context.right.context.value).toBe(6);
+        expect((context.left as any).context.value).toBe(1);
+        expect((context.right as any).context.left.context.left.context.left.context.value).toBe(2);
+        expect((context.right as any).context.left.context.left.context.right.context.value).toBe(3);
+        expect((context.right as any).context.left.context.right.context.value).toBe(4);
+        expect((context.right as any).context.right.context.left.context.value).toBe(5);
+        expect((context.right as any).context.right.context.right.context.value).toBe(6);
     });
 
     test("Should calculate correctly with parentheses", () => {
@@ -202,10 +203,12 @@ describe('AST Multiple Operators Happy Flow', () => {
 
         expect(operatorNode.instruction).toBe("Operator");
 
-        expect(operatorNode.context.left.context.left.instruction).toBe("Parentheses");
-        expect(operatorNode.context.left.context.left.context.value.context.function).toBe("NativeNumberAdd");
+        const context = operatorNode.context as Context["Operator"];
 
-        expect(operatorNode.context.right.context.left.instruction).toBe("Parentheses");
-        expect(operatorNode.context.right.context.left.context.value.context.function).toBe("NativeNumberModulo");
+        expect((context.left as any).context.left.instruction).toBe("Parentheses");
+        expect((context.left as any).context.left.context.value.context.function).toBe("NativeNumberAdd");
+
+        expect((context.right as any).context.left.instruction).toBe("Parentheses");
+        expect((context.right as any).context.left.context.value.context.function).toBe("NativeNumberModulo");
     });
 });

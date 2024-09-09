@@ -1,21 +1,25 @@
 import { nanoid } from "nanoid";
 import { VariablesInstructions } from "../../../../types";
-import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 
-export class DeclarationParser extends InternalInstructionParser {
+export class DeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
     instruction: VariablesInstructions = "VariableDeclaration";
 
     check(): boolean {
         return this.arg === "set";
     }
 
-    handle(): ReturnedInternalInstructionNode {
+    handle(): ReturnedInternalInstructionNode<Context["VariableDeclaration"]> {
         const next = this.next(["VariableName", "VariableMutable"]);
 
         let mutable: boolean = false;
         let nameNode: typeof next;
 
-        if (next?.instruction === "VariableMutable") {
+        if (!next) {
+            throw new Error("Invalid variable declaration");
+        }
+
+        if (next.instruction === "VariableMutable") {
             mutable = true;
             nameNode = this.next(["VariableName"]);
         }
@@ -23,7 +27,7 @@ export class DeclarationParser extends InternalInstructionParser {
             nameNode = next;
         }
 
-        if (nameNode?.instruction !== "VariableName") {
+        if (!isInstruction(nameNode, "VariableName")) {
             throw new Error("Invalid variable name");
         }
 
@@ -41,7 +45,7 @@ export class DeclarationParser extends InternalInstructionParser {
 
         const values = this.nextChildren(undefined, ["Semicolon"]);        
 
-        if (!values || values.length != 2) {
+        if (!values || values.length != 2 || !isTyped(values[0])) {
             throw new Error("Invalid variable value");
         }
 

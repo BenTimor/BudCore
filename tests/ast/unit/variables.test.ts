@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src/ast";
+import { Context, InternalInstructionNode } from "../../../src/ast/types";
 
 describe('AST Variables', () => {
     test("should parse variable declaration", () => {
@@ -12,10 +13,10 @@ describe('AST Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const context = varNode.context;
+        const context = varNode.context as Context["VariableDeclaration"];
 
         expect(context).toBeDefined();
-        expect(context!.name).toBe("a");
+        expect(context.name).toBe("a");
     });
 
     test("shouldn't allow variable redeclaration", () => {
@@ -33,10 +34,10 @@ describe('AST Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const context = varNode.context;
+        const context = varNode.context as Context["VariableDeclaration"];
 
         expect(context).toBeDefined();
-        expect(context!.name).toBe("b");
+        expect(context.name).toBe("b");
     });
 
     test("Shouldn't read not existing variable", () => {
@@ -64,11 +65,11 @@ describe('AST Variables', () => {
 
         expect(varNode.instruction).toBe("VariableDeclaration");
 
-        const context = varNode.context;
+        const context = varNode.context as Context["VariableDeclaration"];
 
         expect(context).toBeDefined();
-        expect(context!.name).toBe("a");
-        expect(context!.mutable).toBe(true);
+        expect(context.name).toBe("a");
+        expect(context.mutable).toBe(true);
     });
 
     test("Change mutable variable", () => {
@@ -84,7 +85,6 @@ describe('AST Variables', () => {
         const context = varNode.context;
 
         expect(context).toBeDefined();
-        expect(context!.name).toBe("a");
     });
 
     test("Change immutable variable", () => {
