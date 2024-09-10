@@ -21,17 +21,20 @@ function escapeRegex(string: string) {
 }
 
 function addSpacesAroundMatches(content: string, stringList: string[]): string {
-    // Sort the strings by length, longest to shortest
-    const sortedList = stringList.sort((a, b) => b.length - a.length).map(escapeRegex);
+    // Escape and sort strings by length in descending order
+    const sortedStrings = stringList
+        .map(escapeRegex)
+        .sort((a, b) => b.length - a.length);
 
-    // Replace each string in content with spaces around it
-    sortedList.forEach((str) => {
-        const regex = new RegExp(`(${str})`, 'g'); // Create a regex to match the string globally
-        content = content.replace(regex, ' $1 '); // Add space before and after the match
-    });
+    // Create a regex pattern that matches any of the strings
+    const pattern = sortedStrings.join('|');
+    const regex = new RegExp(pattern, 'g');
 
-    // Remove any extra spaces introduced (multiple spaces to a single space)
-    return content;
+    // Replace matches with spaces around them
+    content = content.replace(regex, match => ` ${match} `);
+
+    // Clean up extra spaces
+    return content.replace(/\s+/g, ' ').trim();
 }
 
 const stringsToSpaceOut = [
@@ -46,10 +49,18 @@ const stringsToSpaceOut = [
     ")",
     "{",
     "}",
+    "=>",
+    "=>>",
+    "=:>",
+    "=:>>",
+    "...",
 ]
 
 export function buildAST(content: string) {
     const astBuilder = astBuilderFactory();
+
+    console.log(addSpacesAroundMatches("let a=()=>{}", stringsToSpaceOut));
+    
 
     const ast = astBuilder.fromContent(addSpacesAroundMatches(content, stringsToSpaceOut));
 

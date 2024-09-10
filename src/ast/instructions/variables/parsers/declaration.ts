@@ -10,7 +10,7 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
     }
 
     handle(): ReturnedInternalInstructionNode<Context["VariableDeclaration"]> {
-        const next = this.next(["VariableName", "VariableMutable"]);
+        let next = this.next(["VariableName", "VariableMutable"]);
 
         let mutable: boolean = false;
         let nameNode: typeof next;
@@ -39,19 +39,36 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
             throw new Error("Variable already exists");
         }
 
-        if (this.next(["Equals"])?.instruction !== "Equals") {
+        const equalsOrSemicolon = this.next(["Equals", "Semicolon"]);
+
+        let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
+
+        if (isInstruction(equalsOrSemicolon, "Semicolon")) {
+            this.injection.memory.set(`VAR_${name}`, identifier, true);
+
+            return {
+                instruction: "VariableDeclaration",
+                identifier: `VAR_DECLARATION_${nanoid()}`,
+                context: {
+                    name: name,
+                    mutable,
+                    variableType: "void",
+                    identifier,
+                },
+            };
+        }
+
+        if (!isInstruction(equalsOrSemicolon, "Equals")) {
             throw new Error("Invalid variable declaration");
         }
 
-        const values = this.nextChildren(undefined, ["Semicolon"]);        
+        const values = this.nextChildren(undefined, ["Semicolon"]);
 
         if (!values || values.length != 2 || !isTyped(values[0])) {
             throw new Error("Invalid variable value");
         }
 
         const value = values[0];
-
-        let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
 
         // Ensure the identifier is unique
         while (this.astBuilder.getNode(identifier)) {

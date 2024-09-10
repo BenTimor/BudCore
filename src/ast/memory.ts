@@ -1,7 +1,7 @@
 import { IMemory, MemoryStorage } from "./types";
 
 export class Memory implements IMemory {
-    constructor(private parent?: Memory) {}
+    constructor(private parent?: IMemory) {}
 
     private memory: MemoryStorage = {
     };

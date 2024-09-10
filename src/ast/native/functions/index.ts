@@ -5,10 +5,10 @@ export const nativeFunctionsIdentifiers: Record<string, string> = {
 };
 
 export const nativeFunctions: NativeFunctionsMap = {
-    "NativeLog": {
-        args: [
-            { name: "values", type: "any", spread: true }
-        ],
-        returnType: "void",
-    }
+    // "NativeLog": {
+    //     args: [
+    //         { name: "values", type: "any", spread: true }
+    //     ],
+    //     returnType: "void",
+    // }
 };

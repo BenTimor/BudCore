@@ -2,4 +2,7 @@ export type Types =
     | "void" 
     | "number"
     | "function"
-    | "any";
+    | "any"
+    | "tuple"
+    | "array"
+    | "object";

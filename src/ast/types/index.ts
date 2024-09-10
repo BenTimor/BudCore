@@ -2,6 +2,7 @@ import { ASTBuilder, InstructionNode, InstructionParser, ReturnedInstructionNode
 import { Instructions } from "../../types/instructions";
 import { Injections } from "./injections";
 import { Types } from "./types";
+import { FunctionParameter } from "./functions";
 
 export * from "./memory";
 export * from "./injections";
@@ -18,9 +19,13 @@ export type TypedContext = {
     type: Types;
 };
 
+export type BlockContext = {
+    children: InternalInstructionNode<any>[];
+};
+
 export type Context = {
     Parentheses: {
-        value: InternalInstructionNode<any>;
+        children: InternalInstructionNode<any>[];
     } & TypedContext,
     Operator: {
         left: InternalInstructionNode<any>;
@@ -28,9 +33,7 @@ export type Context = {
         precedence: number;
         function: string;
     } & TypedContext,
-    Block: {
-        children: InternalInstructionNode<any>[];
-    },
+    Block: BlockContext,
     Proxy: {
         identifier: string;
         block: InternalInstructionNode<any>;
@@ -40,7 +43,7 @@ export type Context = {
     } & TypedContext,
     VariableDeclaration: {
         identifier: string;
-        value: InternalInstructionNode<any>;
+        value?: InternalInstructionNode<any>;
         name: string;
         mutable: boolean;
         variableType: Types;
@@ -59,6 +62,12 @@ export type Context = {
     Number: {
         value: number;
     } & TypedContext,
+    FunctionDeclaration: {
+        spread: "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread";
+        parameters: FunctionParameter<InternalInstructionNode<any>>[],
+        block: InternalInstructionNode<BlockContext>,
+    } & TypedContext,
+    FunctionParameters: {},
 }
 
 export function isInstruction<Instruction extends Instructions>(node: InternalInstructionNode<any> | undefined, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
