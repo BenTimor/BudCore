@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST } from "../../../src/ast";
-import { Context, InternalInstructionNode } from "../../../src/ast/types";
+import { Context } from "../../../src/ast/types";
 
 describe('AST Variables', () => {
     test("should parse variable declaration", () => {
