@@ -85,7 +85,7 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
                 identifier,
                 mutable,
                 value: value,
-                variableType: value.context.type,
+                variableType: isInstruction(value, "FunctionDeclaration") ? "function" : value.context.type,
             },
         };
     }
