@@ -59,9 +59,6 @@ const stringsToSpaceOut = [
 export function buildAST(content: string) {
     const astBuilder = astBuilderFactory();
 
-    console.log(addSpacesAroundMatches("let a=()=>{}", stringsToSpaceOut));
-    
-
     const ast = astBuilder.fromContent(addSpacesAroundMatches(content, stringsToSpaceOut));
 
     return ast;

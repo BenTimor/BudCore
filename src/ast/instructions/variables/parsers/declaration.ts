@@ -43,12 +43,17 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
 
         let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
 
+        // Ensure the identifier is unique
+        while (this.astBuilder.getNode(identifier)) {
+            identifier = `VAR_DECLARATION_${nanoid()}`;
+        }
+
         if (isInstruction(equalsOrSemicolon, "Semicolon")) {
             this.injection.memory.set(`VAR_${name}`, identifier, true);
 
             return {
                 instruction: "VariableDeclaration",
-                identifier: `VAR_DECLARATION_${nanoid()}`,
+                identifier,
                 context: {
                     name: name,
                     mutable,
@@ -69,11 +74,6 @@ export class DeclarationParser extends InternalInstructionParser<Context["Variab
         }
 
         const value = values[0];
-
-        // Ensure the identifier is unique
-        while (this.astBuilder.getNode(identifier)) {
-            identifier = `VAR_DECLARATION_${nanoid()}`;
-        }
 
         this.injection.memory.set(`VAR_${name}`, identifier, true);
 
