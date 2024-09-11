@@ -3,7 +3,7 @@ import { variablesInstructions } from "./instructions/variables";
 import { InternalASTBuilder } from "./types";
 import { Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
-import { functionsInstructions } from "./instructions/functions";
+import { functionsInstructions, functionVisitors } from "./instructions/functions";
 
 function astBuilderFactory() {
     return new InternalASTBuilder([
@@ -11,6 +11,8 @@ function astBuilderFactory() {
         ...primitivesInstructions,
         ...functionsInstructions,
         ...extrasInstructions,
+    ], [
+        ...functionVisitors,
     ], {
         memory: new Memory(),
     });

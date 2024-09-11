@@ -41,7 +41,7 @@ async function main() {
     const fileWithoutExtension = file.split(".")[0];
 
     switch (command) {
-        case "ast":
+        case "ast":            
             const astResp = buildAST(content);
             writeFileSync(process.argv[4] || `${fileWithoutExtension}.json`, JSON.stringify(astResp, null, 2));
 
@@ -60,8 +60,6 @@ async function main() {
             break;
     }
 }
-
-main();
 
 if (require.main === module) {
     main();

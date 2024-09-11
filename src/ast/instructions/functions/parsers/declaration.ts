@@ -18,7 +18,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         return this.arg === "=>" || this.arg === "=>>" || this.arg === "=:>" || this.arg === "=:>>";
     }
 
-    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> {
+    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> {             
         const parametersNode = this.astBuilder.nodes.pop();
 
         if (!isInstruction(parametersNode, "Parentheses")) {

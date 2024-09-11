@@ -1,4 +1,4 @@
-import { ASTBuilder, InstructionNode, InstructionParser, ReturnedInstructionNode } from "engine";
+import { ASTBuilder, InstructionNode, InstructionParser, InstructionVisitor, ReturnedInstructionNode } from "engine";
 import { Instructions } from "../../types/instructions";
 import { Injections } from "./injections";
 import { Types } from "./types";
@@ -14,6 +14,8 @@ export type ReturnedInternalInstructionNode<Context = undefined> = ReturnedInstr
 export abstract class InternalInstructionParser<Context = undefined> extends InstructionParser<Instructions, Context, Injections> { }
 
 export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> { }
+
+export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections> { }
 
 export type TypedContext = {
     type: Types;
