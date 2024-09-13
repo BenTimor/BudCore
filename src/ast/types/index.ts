@@ -11,7 +11,11 @@ export type InternalInstructionNode<Context = undefined> = InstructionNode<Instr
 
 export type ReturnedInternalInstructionNode<Context = undefined> = ReturnedInstructionNode<Instructions, Context>;
 
-export abstract class InternalInstructionParser<Context = undefined> extends InstructionParser<Instructions, Context, Injections> { }
+export abstract class InternalInstructionParser<Context = undefined> extends InstructionParser<Instructions, Context, Injections> {
+    trace(cords: [number, number]): string {
+        return `  > ${this.instruction} at ${this.injection.filePath}:${cords[0]}:${cords[1]}`;
+    }
+}
 
 export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> { }
 
