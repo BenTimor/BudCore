@@ -1,5 +1,7 @@
 import { VariablesInstructions } from "../../../../types";
-import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { CompilerError, Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { MissingEqualsSign, MissingVariableValue, MultipleValuesInVariable } from "../errors";
+import { VariableIsImmutable, VariableNotFound } from "../errors/assign";
 
 export class AssignmentParser extends InternalInstructionParser<Context["VariableAssignment"]> {
     instruction: VariablesInstructions = "VariableAssignment";
@@ -14,38 +16,42 @@ export class AssignmentParser extends InternalInstructionParser<Context["Variabl
         const varIdentifier = this.injection.memory.get(`VAR_${variableName}`, false);
 
         if (!varIdentifier) {
-            throw new Error(`Variable ${variableName} not found`);
+            throw new VariableNotFound(variableName);
         }
 
-        const varNode = this.astBuilder.getNode(varIdentifier);        
+        const varNode = this.astBuilder.getNode(varIdentifier);
 
         if (!isInstruction(varNode, "VariableDeclaration")) {
-            throw new Error(`Variable ${variableName} is not declared`);
+            throw new CompilerError(`Variable identifier ${varIdentifier} is found but it is not a variable declaration`);
         }
 
         if (!varNode?.context?.mutable) {
-            throw new Error(`Variable ${variableName} is not mutable`);
+            throw new VariableIsImmutable(variableName);
         }
 
-        this.next(["Equals"]); // Skip the equals sign
+        if (!this.next(["Equals"])) {
+            throw new MissingEqualsSign();
+        }
 
-        const values = this.nextChildren(undefined, ["Semicolon"]);        
+        const values = this.nextChildren(undefined, ["Semicolon"]);
 
-        if (!values || values.length != 2) {
-            throw new Error("Invalid variable value");
+        if (values.length === 1) {
+            throw new MissingVariableValue();
+        }
+
+        if (values.length > 2) {
+            throw new MultipleValuesInVariable();
         }
 
         const value = values[0];
 
-        if (!isTyped(value)) {
-            throw new Error("Invalid value type");
-        }
+        // TODO Validate the value type
 
         return {
             instruction: "VariableAssignment",
             context: {
                 identifier: varIdentifier,
-                type: value.context.type,
+                type: isTyped(value) ? value.context.type : "void",
                 value: value,
             },
         };

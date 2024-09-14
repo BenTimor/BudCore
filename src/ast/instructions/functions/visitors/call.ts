@@ -1,4 +1,5 @@
-import { Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction } from "../../../types";
+import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction } from "../../../types";
+import { InvalidFunctionParameter, MissingFunctionParameterValue } from "../errors";
 
 export class FunctionCallVisitor extends InternalInstructionVisitor {
     check(): boolean {
@@ -9,18 +10,18 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
         const variableRead = this.astBuilder.nodes.pop();
 
         if (!isInstruction(variableRead, "VariableRead") || !isInstruction(parentheses, "Parentheses")) {
-            throw new Error("Invalid function call");
+            throw new CompilerError("There was an error parsing the function call. Could not find the variable read or parentheses while handling the function call");
         }
 
         let args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]> = {};
 
         for (const child of parentheses.context.children) {
             if (!isInstruction(child, "VariableDeclaration")) {
-                throw new Error("Invalid function parameters");
+                throw new InvalidFunctionParameter();
             }
 
             if (!child.context.value) {
-                throw new Error("Invalid function parameters value");
+                throw new MissingFunctionParameterValue();
             }
 
             args[child.context.name] = child.context.value;

@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
+import { MissingProxyBlock, MissingProxyReference } from "../errors";
 
 export class ProxyParser extends InternalInstructionParser<Context["Proxy"]> {
     instruction: Instructions = "Proxy";
@@ -12,13 +13,13 @@ export class ProxyParser extends InternalInstructionParser<Context["Proxy"]> {
         const variable = this.next(["VariableRead"]);
 
         if (!isInstruction(variable, "VariableRead")) {
-            throw new Error("Proxy must have a reference");
+            throw new MissingProxyReference();
         }
         
         const block = this.next(["Block"]);
 
         if (!block) {
-            throw new Error("Proxy must have a block");
+            throw new MissingProxyBlock();
         }
 
         return {

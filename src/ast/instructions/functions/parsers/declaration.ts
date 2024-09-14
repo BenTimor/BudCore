@@ -1,6 +1,7 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
 import { FunctionParameter } from "../../../types/functions";
+import { ExpectedArrayParameter, ExpectedBlockAfterFunctionDeclaration, ExpectedObjectAndArrayParameter, ExpectedObjectParameter, ExpectedVariableDeclaration, MissingParametersDeclaration } from "../errors";
 
 type Arrow = "=>" | "=>>" | "=:>" | "=:>>";
 
@@ -22,14 +23,14 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         const parametersNode = this.astBuilder.nodes.pop();
 
         if (!isInstruction(parametersNode, "Parentheses")) {
-            throw new Error("Expected parentheses before arrow function");
+            throw new MissingParametersDeclaration();
         }
 
         const parameters: FunctionParameter<InternalInstructionNode<any>>[] = [];
 
         for (const child of parametersNode.context.children) {
             if (!isInstruction(child, "VariableDeclaration")) {
-                throw new Error("Expected variable declaration in function parameters");
+                throw new ExpectedVariableDeclaration();
             }
 
             parameters.push({
@@ -46,33 +47,29 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             const objParam = parameters.at(-1);
             const arrParam = parameters.at(-2);
 
-            if (!objParam || objParam.type !== "object") {
-                throw new Error("Expected object parameter when using all spread");
-            }
-
-            if (!arrParam || arrParam.type !== "array") {
-                throw new Error("Expected array parameter when using all spread");
+            if (!objParam || objParam.type !== "object" || !arrParam || arrParam.type !== "array") {
+                throw new ExpectedObjectAndArrayParameter();
             }
         }
         else if (spread === "ArraySpread") {
             const arrParam = parameters.at(-1);
 
             if (!arrParam || arrParam.type !== "array") {
-                throw new Error("Expected array parameter when using array spread");
+                throw new ExpectedArrayParameter();
             }
         }
         else if (spread === "ObjectSpread") {
             const objParam = parameters.at(-1);
 
             if (!objParam || objParam.type !== "object") {
-                throw new Error("Expected object parameter when using object spread");
+                throw new ExpectedObjectParameter();
             }
         }
 
         const block = this.next(["Block"]);
 
         if (!isInstruction(block, "Block")) {
-            throw new Error("Expected block after function declaration");
+            throw new ExpectedBlockAfterFunctionDeclaration();
         }
 
         return {

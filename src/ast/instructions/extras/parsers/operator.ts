@@ -1,6 +1,7 @@
 import { Instructions } from "../../../../types";
 import { nativeOperators } from "../../../native";
 import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { InvalidLeftValue, InvalidRightValue, MissingLeftValue, MissingRightValue, OperatorNotFound } from "../errors";
 
 export class OperatorParser extends InternalInstructionParser<Context["Operator"]> {
     instruction: Instructions = "Operator";
@@ -12,14 +13,22 @@ export class OperatorParser extends InternalInstructionParser<Context["Operator"
     handle(): ReturnedInternalInstructionNode<Context["Operator"]> {
         const left = this.astBuilder.nodes.pop();
 
-        if (!left || !isTyped(left)) {
-            throw new Error("Invalid operator usage");
+        if (!left) {
+            throw new MissingLeftValue();
+        }
+
+        if (!isTyped(left)) {
+            throw new InvalidLeftValue();
         }
 
         const right = this.next();
 
-        if (!right || !isTyped(right)) {
-            throw new Error("Invalid operator usage");
+        if (!right) {
+            throw new MissingRightValue();
+        }
+
+        if (!isTyped(right)) {
+            throw new InvalidRightValue();
         }
 
         const leftType = left.context.type;
@@ -30,7 +39,7 @@ export class OperatorParser extends InternalInstructionParser<Context["Operator"
         });
 
         if (!operator) {
-            throw new Error("Invalid operator usage");
+            throw new OperatorNotFound(this.arg, leftType, rightType);
         }
 
         if (isInstruction(left, "Operator")) {

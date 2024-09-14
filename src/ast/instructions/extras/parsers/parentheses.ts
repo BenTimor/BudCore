@@ -1,6 +1,7 @@
 import { Instructions } from "../../../../types";
 import { Memory } from "../../../memory";
 import { Context, InternalInstructionParser, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { EmptyParenteses } from "../errors";
 
 export class ParenthesesEndParser extends InternalInstructionParser {
     limited: boolean = true;
@@ -35,7 +36,7 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
         children.pop(); // Remove the last element, which is the closing parenthesis
 
         if (children.length === 0) {
-            throw new Error("Parentheses must contain at least one element");
+            throw new EmptyParenteses();
         }
 
         if (children.length > 1) {
@@ -50,14 +51,10 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
 
         const child = children[0];
 
-        if (!isTyped(child)) {
-            throw new Error("Parentheses must contain an element of a known type");
-        }
-
         return {
             instruction: "Parentheses",
             context: {
-                type: child.context.type,
+                type: isTyped(child) ? child.context.type : "void",
                 children,
             },
         };

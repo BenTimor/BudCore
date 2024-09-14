@@ -6,6 +6,7 @@ import { FunctionParameter } from "./functions";
 
 export * from "./memory";
 export * from "./injections";
+export * from "./errors";
 
 export type InternalInstructionNode<Context = undefined> = InstructionNode<Instructions, Context>;
 
@@ -29,6 +30,7 @@ export type BlockContext = {
     children: InternalInstructionNode<any>[];
 };
 
+// TODO Move to a separate file
 export type Context = {
     Parentheses: {
         children: InternalInstructionNode<any>[];
