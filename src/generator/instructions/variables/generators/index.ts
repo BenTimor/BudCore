@@ -1,7 +1,7 @@
-import { DeclarationGenerator } from "./declaration";
-import { ReadGenerator } from "./read";
+import { VariableDeclarationGenerator } from "./declaration";
+import { VariableReadGenerator } from "./read";
 
 export const variableGenerators = [
-    DeclarationGenerator,
-    ReadGenerator,
+    VariableDeclarationGenerator,
+    VariableReadGenerator,
 ]

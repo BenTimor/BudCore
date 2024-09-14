@@ -1,5 +1,7 @@
-import { CallGenerator } from "./call";
+import { FunctionCallGenerator } from "./call";
+import { NativeFunctionGenerator } from "./native";
 
 export const functionGenerators = [
-    CallGenerator,
+    FunctionCallGenerator,
+    NativeFunctionGenerator,
 ];

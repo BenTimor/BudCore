@@ -34,3 +34,17 @@ export class Memory implements IMemory {
         return this.memory[key] ?? this.parent?.get(key, false);
     }
 }
+
+export class Globals implements IMemory {
+    private static memory: MemoryStorage = {
+        "VAR_log": "VAR_DECLARATION_NATIVE_LOG",
+    };
+
+    set<K extends keyof MemoryStorage>(key: K, value: MemoryStorage[K], forceCurrent: boolean): void {
+        throw new Error("Globals cannot be set");
+    }
+
+    get<K extends keyof MemoryStorage>(key: K, forceCurrent: boolean): MemoryStorage[K] {
+        return Globals.memory[key];
+    }
+}

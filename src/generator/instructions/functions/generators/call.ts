@@ -1,7 +1,7 @@
 import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
-export class CallGenerator extends InternalInstructionGenerator {
+export class FunctionCallGenerator extends InternalInstructionGenerator {
     async check(node: InternalInstructionNode) {
         return node.instruction === "FunctionCall";
     }

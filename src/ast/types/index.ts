@@ -50,7 +50,6 @@ export type Context = {
         identifier: string;
     } & TypedContext,
     VariableDeclaration: {
-        identifier: string;
         value?: InternalInstructionNode<any>;
         name: string;
         mutable: boolean;
@@ -75,7 +74,9 @@ export type Context = {
         parameters: FunctionParameter<InternalInstructionNode<any>>[],
         block: InternalInstructionNode<BlockContext>,
     } & TypedContext,
-    FunctionParameters: {},
+    NativeFunction: {
+        name: string;
+    },
 }
 
 export function isInstruction<Instruction extends Instructions>(node: InternalInstructionNode<any> | undefined, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

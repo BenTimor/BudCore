@@ -1,7 +1,7 @@
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions } from "./instructions/variables";
-import { BudError, Injections, InternalASTBuilder } from "./types";
-import { Memory } from "./memory";
+import { BudError, Context, Injections, InternalASTBuilder, InternalInstructionNode } from "./types";
+import { Globals, Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
 import { functionsInstructions, functionVisitors } from "./instructions/functions";
 import { Instructions } from "../types";
@@ -46,7 +46,7 @@ function astBuilderFactory(filePath: string) {
     ], [
         ...functionVisitors,
     ], {
-        memory: new Memory(),
+        memory: new Memory(new Globals()),
         filePath,
     }, {
         spaceOut: stringsToSpaceOut,
@@ -61,8 +61,34 @@ function astBuilderFactory(filePath: string) {
     });
 }
 
+export function injectGlobals(astBuilder: InternalASTBuilder) {
+    const logNativeFunction: InternalInstructionNode<Context["NativeFunction"]> = {
+        instruction: "NativeFunction",
+        endsAt: -1,
+        context: {
+            name: "log",
+        }
+    };
+
+    const logVariable: InternalInstructionNode<Context["VariableDeclaration"]> = {
+        instruction: "VariableDeclaration",
+        identifier: "VAR_DECLARATION_NATIVE_LOG",
+        endsAt: -1,
+        context: {
+            name: "log",
+            mutable: false,
+            variableType: "function",
+            value: logNativeFunction,
+        },
+    };
+
+    astBuilder.addNode(logVariable);
+}
+
 export function buildAST(content: string, filePath: string = "") {
     const astBuilder = astBuilderFactory(filePath);
+
+    injectGlobals(astBuilder);
 
     const ast = astBuilder.fromContent(content);
 

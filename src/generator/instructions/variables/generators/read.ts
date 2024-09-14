@@ -1,7 +1,7 @@
 import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
-export class ReadGenerator extends InternalInstructionGenerator {
+export class VariableReadGenerator extends InternalInstructionGenerator {
     async check(node: InternalInstructionNode) {        
         return node.instruction === "VariableRead";
     }

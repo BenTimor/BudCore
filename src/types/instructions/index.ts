@@ -1,5 +1,6 @@
 import { ExtrasInstructions } from "./extras";
 import { FunctionsInstructions } from "./functions";
+import { NativeInstructions } from "./native";
 import { PrimitivesInstructions } from "./primitives";
 import { VariablesInstructions } from "./variables";
 
@@ -7,7 +8,8 @@ export type Instructions =
     | VariablesInstructions
     | PrimitivesInstructions
     | ExtrasInstructions
-    | FunctionsInstructions;
+    | FunctionsInstructions
+    | NativeInstructions;
 
 export * from "./variables";
 export * from "./primitives";

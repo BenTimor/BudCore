@@ -59,7 +59,6 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
                     name: name,
                     mutable,
                     variableType: "void",
-                    identifier,
                 },
             };
         }
@@ -87,7 +86,6 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
             identifier: identifier,
             context: {
                 name: name,
-                identifier,
                 mutable,
                 value: value,
                 variableType: isInstruction(value, "FunctionDeclaration") ? "function" : (isTyped(value) ? value.context.type : "void"),
