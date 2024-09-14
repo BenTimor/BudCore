@@ -3,7 +3,7 @@ import { CompilerError, Context, InternalInstructionParser, isInstruction, isTyp
 import { MissingEqualsSign, MissingVariableValue, MultipleValuesInVariable } from "../errors";
 import { VariableIsImmutable, VariableNotFound } from "../errors/assign";
 
-export class AssignmentParser extends InternalInstructionParser<Context["VariableAssignment"]> {
+export class VariableAssignmentParser extends InternalInstructionParser<Context["VariableAssignment"]> {
     instruction: VariablesInstructions = "VariableAssignment";
 
     check(): boolean {

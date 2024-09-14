@@ -1,7 +1,7 @@
 import { VariablesInstructions } from "../../../../types";
 import { InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
 
-export class MutableParser extends InternalInstructionParser {
+export class VariableMutableParser extends InternalInstructionParser {
     instruction: VariablesInstructions = "VariableMutable";
     limited = true;
     

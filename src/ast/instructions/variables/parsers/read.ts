@@ -1,9 +1,8 @@
 import { VariablesInstructions } from "../../../../types";
-import { nativeVariables } from "../../../native";
 import { nativeFunctionsIdentifiers } from "../../../native/functions";
 import { CompilerError, Context, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
 
-export class ReadParser extends InternalInstructionParser<Context["VariableRead"]> {
+export class VariableReadParser extends InternalInstructionParser<Context["VariableRead"]> {
     instruction: VariablesInstructions = "VariableRead";
 
     check(): boolean {

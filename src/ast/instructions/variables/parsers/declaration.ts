@@ -3,7 +3,7 @@ import { VariablesInstructions } from "../../../../types";
 import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 import { MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
 
-export class DeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
+export class VariableDeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
     instruction: VariablesInstructions = "VariableDeclaration";
 
     check(): boolean {

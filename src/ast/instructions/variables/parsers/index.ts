@@ -1,13 +1,13 @@
-import { AssignmentParser } from "./assign";
-import { DeclarationParser } from "./declaration";
-import { MutableParser } from "./mutable";
+import { VariableAssignmentParser } from "./assign";
+import { VariableDeclarationParser } from "./declaration";
+import { VariableMutableParser } from "./mutable";
 import { VariableNameParser } from "./name";
-import { ReadParser } from "./read";
+import { VariableReadParser } from "./read";
 
 export const variablesInstructions = [
-    DeclarationParser,
+    VariableDeclarationParser,
     VariableNameParser,
-    AssignmentParser,
-    ReadParser,
-    MutableParser,
+    VariableAssignmentParser,
+    VariableReadParser,
+    VariableMutableParser,
 ];
