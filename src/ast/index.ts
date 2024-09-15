@@ -85,10 +85,12 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
     astBuilder.addNode(logVariable);
 }
 
-export function buildAST(content: string, filePath: string = "") {
+export function buildAST(content: string, filePath: string = "", shouldInjectGlobals: boolean = true) {
     const astBuilder = astBuilderFactory(filePath);
 
-    injectGlobals(astBuilder);
+    if (shouldInjectGlobals) {
+        injectGlobals(astBuilder);
+    }
 
     const ast = astBuilder.fromContent(content);
 

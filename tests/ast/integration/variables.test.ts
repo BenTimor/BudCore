@@ -1,6 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { buildAST } from "../../../src/ast";
+import { buildAST as _buildAST } from "../../../src/ast";
 import { Context, InternalInstructionNode } from "../../../src/ast/types";
+
+const buildAST = (code: string) => _buildAST(code, "", false);
 
 describe('AST Data In Variables', () => {
     test("should assign correct number to variable", () => {
@@ -16,7 +18,7 @@ describe('AST Data In Variables', () => {
         const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
-        expect(varContext.value.instruction).toBe("Number");
+        expect(varContext.value?.instruction).toBe("Number");
 
         const numberContext = (varContext.value as InternalInstructionNode<Context["Number"]>).context;
 
@@ -45,7 +47,7 @@ describe('AST Data In Variables', () => {
         const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
-        expect(varContext.value.instruction).toBe("Operator");
+        expect(varContext.value?.instruction).toBe("Operator");
 
         const operatorContext = (varContext.value as InternalInstructionNode<Context["Operator"]>).context;
 
@@ -65,7 +67,7 @@ describe('AST Data In Variables', () => {
         const varContext = varNode.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
-        expect(varContext.value.instruction).toBe("Operator");
+        expect(varContext.value?.instruction).toBe("Operator");
 
         const operatorContext = (varContext.value as InternalInstructionNode<Context["Operator"]>).context;
 

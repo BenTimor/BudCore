@@ -1,7 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Memory } from "../../../memory";
 import { Context, InternalInstructionParser, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { EmptyParenteses } from "../errors";
 
 export class ParenthesesEndParser extends InternalInstructionParser {
     limited: boolean = true;
@@ -36,7 +35,13 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
         children.pop(); // Remove the last element, which is the closing parenthesis
 
         if (children.length === 0) {
-            throw new EmptyParenteses();
+            return {
+                instruction: "Parentheses",
+                context: {
+                    type: "void",
+                    children: [],
+                },
+            }
         }
 
         if (children.length > 1) {

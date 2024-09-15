@@ -1,6 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { buildAST } from "../../../src/ast";
+import { buildAST as _buildAST } from "../../../src/ast";
 import { Context } from "../../../src/ast/types";
+
+const buildAST = (code: string) => _buildAST(code, "", false);
 
 describe('AST One Operator Happy Flow', () => {
     test("Should parse addition", () => {
