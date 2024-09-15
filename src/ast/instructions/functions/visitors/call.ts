@@ -13,32 +13,112 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
             throw new CompilerError("There was an error parsing the function call. Could not find the variable read or parentheses while handling the function call");
         }
 
+        const functionNode = this.astBuilder.getNode(variableRead.context.identifier) as InternalInstructionNode<Context["FunctionDeclaration"]>; // TODO Validate type and allow all sort of types who return function
+
         let args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]> = {};
 
-        for (const child of parentheses.context.children) {
-            if (!isInstruction(child, "VariableDeclaration")) {
+        let hasNamedArg = false;
+
+        const parenthesesChildren = parentheses.context.children.filter(child => child.instruction !== "Semicolon");
+
+        for (let childIndex = 0; childIndex < parenthesesChildren.length; childIndex++) {
+            const child = parenthesesChildren[childIndex];
+
+            if (isInstruction(child, "VariableDeclaration")) {
+                hasNamedArg = true;
+
+                if (!child.context.value) {
+                    throw new MissingFunctionParameterValue();
+                }
+
+                if (functionNode.context.parameters.find(param => param.name === child.context.name)) {
+                    args[child.context.name] = child.context.value;
+                    continue;
+                }
+
+                if (functionNode.context.spread === "AllSpread" || functionNode.context.spread === "ObjectSpread") {
+                    const objParam = functionNode.context.parameters.at(-1); 
+
+                    if (!objParam) {
+                        throw new InvalidFunctionParameter();
+                    }
+
+                    const objParamName = objParam.name;
+
+                    if (!args[objParamName]) {
+                        const argDeclaration: InternalInstructionNode<Context["VariableDeclaration"]> = {
+                            instruction: "VariableDeclaration",
+                            endsAt: -1,
+                            context: {
+                                name: objParamName,
+                                value: {} as any, // TODO Add object node and integrate it
+                                mutable: objParam.mutable,
+                                variableType: objParam.type,
+                            }
+                        };
+
+                        args[objParamName] = argDeclaration;
+                    }
+
+                    throw new CompilerError("Not implemented yet");
+                }
+
                 throw new InvalidFunctionParameter();
             }
+            else {
+                if (hasNamedArg || childIndex >= functionNode.context.parameters.length) {
+                    let arrParam;
 
-            if (!child.context.value) {
-                throw new MissingFunctionParameterValue();
+                    if (functionNode.context.spread === "AllSpread") {
+                        arrParam = functionNode.context.parameters.at(-2);
+                    }
+                    else if (functionNode.context.spread === "ArraySpread") {
+                        arrParam = functionNode.context.parameters.at(-1);
+                    }
+                    else {
+                        throw new InvalidFunctionParameter();
+                    }
+
+                    if (!arrParam) {
+                        throw new InvalidFunctionParameter();
+                    }
+
+                    const arrParamName = arrParam.name;
+
+                    if (!args[arrParamName]) {
+                        const argDeclaration: InternalInstructionNode<Context["VariableDeclaration"]> = {
+                            instruction: "VariableDeclaration",
+                            endsAt: -1,
+                            context: {
+                                name: arrParamName,
+                                value: [] as any, // TODO Add array node and integrate it
+                                mutable: arrParam.mutable,
+                                variableType: arrParam.type,
+                            }
+                        };
+
+                        args[arrParamName] = argDeclaration;
+                    }
+
+                    throw new CompilerError("Not implemented yet");
+                }
+
+                args[functionNode.context.parameters[childIndex].name] = child; // TODO Type validations
             }
 
-            args[child.context.name] = child.context.value;
+            const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
+                instruction: "FunctionCall",
+                endsAt: parentheses.endsAt,
+                context: {
+                    args,
+                    identifier: variableRead.context.identifier,
+                    type: {
+                        name: "void",
+                    }, // TODO Fix types
+                }
+            };
+
+            this.astBuilder.nodes.push(functionCallNode);
         }
-
-        const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
-            instruction: "FunctionCall",
-            endsAt: parentheses.endsAt,
-            context: {
-                args,
-                identifier: variableRead.context.identifier,
-                type: {
-                    name: "void",
-                }, // TODO Fix types
-            }
-        };
-
-        this.astBuilder.nodes.push(functionCallNode);
     }
 }
