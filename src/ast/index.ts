@@ -77,7 +77,20 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
         context: {
             name: "log",
             mutable: false,
-            variableType: "function",
+            variableType: {
+                name: "function",
+                parameters: [
+                    {
+                        name: "array",
+                        elementType: {
+                            name: "any",
+                        }
+                    }
+                ],
+                returnType: {
+                    name: "void",
+                }
+            },
             value: logNativeFunction,
         },
     };

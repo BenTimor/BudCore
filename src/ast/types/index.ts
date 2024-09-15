@@ -1,7 +1,7 @@
 import { ASTBuilder, InstructionNode, InstructionParser, InstructionVisitor, ReturnedInstructionNode } from "engine";
 import { Instructions } from "../../types/instructions";
 import { Injections } from "./injections";
-import { Types } from "./types";
+import { Type } from "./types";
 import { FunctionParameter } from "./functions";
 
 export * from "./memory";
@@ -23,7 +23,7 @@ export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> { }
 export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections> { }
 
 export type TypedContext = {
-    type: Types;
+    type: Type;
 };
 
 export type BlockContext = {
@@ -53,7 +53,7 @@ export type Context = {
         value?: InternalInstructionNode<any>;
         name: string;
         mutable: boolean;
-        variableType: Types;
+        variableType: Type;
     },
     VariableName: {
         name: string;

@@ -1,16 +1,16 @@
 import { InternalInstructionNode } from ".";
-import { Types } from "./types";
+import { Type } from "./types";
 
 export type FunctionParameter<InternalInstructionNode> = {
     name: string;
-    type: Types;
+    type: Type;
     mutable: boolean;
     default?: InternalInstructionNode;
 };
 
 export type NativeFunction = {
     args: FunctionParameter<any>[];
-    returnType: Types;
+    returnType: Type;
 };
 
 export type NativeFunctionsMap = {

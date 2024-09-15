@@ -51,7 +51,9 @@ export class VariableAssignmentParser extends InternalInstructionParser<Context[
             instruction: "VariableAssignment",
             context: {
                 identifier: varIdentifier,
-                type: isTyped(value) ? value.context.type : "void",
+                type: isTyped(value) ? value.context.type : {
+                    name: "void",
+                },
                 value: value,
             },
         };

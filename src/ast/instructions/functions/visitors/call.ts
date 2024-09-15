@@ -33,7 +33,9 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
             context: {
                 args,
                 identifier: variableRead.context.identifier,
-                type: "void", // TODO Fix types
+                type: {
+                    name: "void",
+                }, // TODO Fix types
             }
         };
 

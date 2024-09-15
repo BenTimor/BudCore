@@ -47,21 +47,21 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             const objParam = parameters.at(-1);
             const arrParam = parameters.at(-2);
 
-            if (!objParam || objParam.type !== "object" || !arrParam || arrParam.type !== "array") {
+            if (!objParam || objParam.type.name !== "object" || !arrParam || arrParam.type.name !== "array") { // TODO Validate inner object/array types
                 throw new ExpectedObjectAndArrayParameter();
             }
         }
         else if (spread === "ArraySpread") {
             const arrParam = parameters.at(-1);
 
-            if (!arrParam || arrParam.type !== "array") {
+            if (!arrParam || arrParam.type.name !== "array") {
                 throw new ExpectedArrayParameter();
             }
         }
         else if (spread === "ObjectSpread") {
             const objParam = parameters.at(-1);
 
-            if (!objParam || objParam.type !== "object") {
+            if (!objParam || objParam.type.name !== "object") {
                 throw new ExpectedObjectParameter();
             }
         }
@@ -76,7 +76,11 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             instruction: "FunctionDeclaration",
             context: {
                 parameters,
-                type: "void", // TODO Implement types
+                type: {
+                    name: "function", // TODO Implement types
+                    parameters: parameters.map((parameter) => parameter.type),
+                    returnType: { name: "void" }, // TODO Implement types
+                },
                 spread,
                 block,
             }

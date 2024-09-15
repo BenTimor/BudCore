@@ -1,10 +1,10 @@
-import { Types } from "./types";
+import { Type } from "./types";
 
 export type NativeOperator = {
     precedence: number;
-    leftType: Types;
-    rightType: Types;
-    returnType: Types;
+    leftType: Type;
+    rightType: Type;
+    returnType: Type;
     functionIdentifier: string;
 };
 

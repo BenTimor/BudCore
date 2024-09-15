@@ -38,7 +38,9 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
             return {
                 instruction: "Parentheses",
                 context: {
-                    type: "void",
+                    type: {
+                        name: "void",
+                    },
                     children: [],
                 },
             }
@@ -48,7 +50,14 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
             return {
                 instruction: "Parentheses",
                 context: {
-                    type: "tuple", // TODO Not sure if this is the best type
+                    type: {
+                        name: "tuple",
+                        elements: children.map((child) => {
+                            return isTyped(child) ? child.context.type : {
+                                name: "void",
+                            };
+                        }),
+                    },
                     children,
                 },
             }
@@ -59,7 +68,9 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
         return {
             instruction: "Parentheses",
             context: {
-                type: isTyped(child) ? child.context.type : "void",
+                type: isTyped(child) ? child.context.type : {
+                    name: "void",
+                },
                 children,
             },
         };
