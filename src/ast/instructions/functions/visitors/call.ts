@@ -1,26 +1,24 @@
-import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction } from "../../../types";
+import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction, isTyped } from "../../../types";
 import { InvalidFunctionParameter, MissingFunctionParameterValue } from "../errors";
 
 export class FunctionCallVisitor extends InternalInstructionVisitor {
     check(): boolean {
-        return isInstruction(this.astBuilder.nodes.at(-1), "Parentheses") && isInstruction(this.astBuilder.nodes.at(-2), "VariableRead");
+        const functionNode = this.astBuilder.nodes.at(-2);
+        return isInstruction(this.astBuilder.nodes.at(-1), "Parentheses") && isTyped(functionNode) && functionNode.context.type.name === "function";
     }
     handle(): void {
-        const parentheses = this.astBuilder.nodes.pop();
-        const variableRead = this.astBuilder.nodes.pop();
+        const parenthesesNode = this.astBuilder.nodes.pop();
+        const functionNode = this.astBuilder.nodes.pop();
 
-        if (!isInstruction(variableRead, "VariableRead") || !isInstruction(parentheses, "Parentheses")) {
+        if (!isInstruction(parenthesesNode, "Parentheses") || !isTyped(functionNode) || functionNode.context.type.name !== "function") {
             throw new CompilerError("There was an error parsing the function call. Could not find the variable read or parentheses while handling the function call");
         }
-
-        const varDeclarationNode = this.astBuilder.getNode(variableRead.context.identifier) as InternalInstructionNode<Context["VariableDeclaration"]>; // TODO Validate type and allow all sort of types who return function
-        const functionNode = varDeclarationNode.context.value as InternalInstructionNode<Context["FunctionDeclaration"]>;
 
         let args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]> = {};
 
         let hasNamedArg = false;
 
-        const parenthesesChildren = parentheses.context.children.filter(child => child.instruction !== "Semicolon");
+        const parenthesesChildren = parenthesesNode.context.children.filter(child => child.instruction !== "Semicolon");
 
         for (let childIndex = 0; childIndex < parenthesesChildren.length; childIndex++) {
             const child = parenthesesChildren[childIndex];
@@ -32,13 +30,13 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                     throw new MissingFunctionParameterValue();
                 }
 
-                if (functionNode.context.parameters.find(param => param.name === child.context.name)) {
+                if (functionNode.context.type.parameters.find(param => param.name === child.context.name)) {
                     args[child.context.name] = child.context.value;
                     continue;
                 }
 
-                if (functionNode.context.spread === "AllSpread" || functionNode.context.spread === "ObjectSpread") {
-                    const objParam = functionNode.context.parameters.at(-1);
+                if (functionNode.context.type.spread === "AllSpread" || functionNode.context.type.spread === "ObjectSpread") {
+                    const objParam = functionNode.context.type.parameters.at(-1);
 
                     if (!objParam) {
                         throw new InvalidFunctionParameter();
@@ -67,16 +65,16 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                 throw new InvalidFunctionParameter();
             }
             else {
-                const lengthOffset = functionNode.context.spread === "AllSpread" ? 2 : (functionNode.context.spread === "ArraySpread" ? 1 : 0);
+                const lengthOffset = functionNode.context.type.spread === "AllSpread" ? 2 : (functionNode.context.type.spread === "ArraySpread" ? 1 : 0);
 
-                if (hasNamedArg || childIndex >= functionNode.context.parameters.length - lengthOffset) {
+                if (hasNamedArg || childIndex >= functionNode.context.type.parameters.length - lengthOffset) {
                     let arrParam;
 
-                    if (functionNode.context.spread === "AllSpread") {
-                        arrParam = functionNode.context.parameters.at(-2);
+                    if (functionNode.context.type.spread === "AllSpread") {
+                        arrParam = functionNode.context.type.parameters.at(-2);
                     }
-                    else if (functionNode.context.spread === "ArraySpread") {
-                        arrParam = functionNode.context.parameters.at(-1);
+                    else if (functionNode.context.type.spread === "ArraySpread") {
+                        arrParam = functionNode.context.type.parameters.at(-1);
                     }
                     else {
                         throw new InvalidFunctionParameter();
@@ -111,20 +109,18 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                     args[arrParamName].context.children.push(child);
                 }
                 else {
-                    args[functionNode.context.parameters[childIndex].name] = child; // TODO Type validations
+                    args[functionNode.context.type.parameters[childIndex].name] = child; // TODO Type validations
                 }
             }
         }
 
         const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
             instruction: "FunctionCall",
-            endsAt: parentheses.endsAt,
+            endsAt: parenthesesNode.endsAt,
             context: {
                 args,
-                identifier: variableRead.context.identifier,
-                type: {
-                    name: "void",
-                }, // TODO Fix types
+                function: functionNode,
+                type: functionNode.context.type.returnType,
             }
         };
 

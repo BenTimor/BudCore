@@ -69,28 +69,21 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
         instruction: "NativeFunction",
         endsAt: -1,
         context: {
-            name: "log",
-            spread: "ArraySpread",
-            parameters: [
-                {
-                    name: "values",
-                    type: {
-                        name: "array",
-                        elementType: {
-                            name: "any",
-                        }
-                    },
-                    mutable: false,
-                }
-            ],
+            name: "NativeLog",
             type: {
                 name: "function",
+                spread: "ArraySpread",
                 parameters: [
                     {
-                        name: "array",
-                        elementType: {
-                            name: "any",
-                        }
+                        name: "values",
+                        type: {
+                            name: "array",
+                            elementType: {
+                                name: "any",
+                            }
+                        },
+                        mutable: false,
+                        optional: false,
                     }
                 ],
                 returnType: {

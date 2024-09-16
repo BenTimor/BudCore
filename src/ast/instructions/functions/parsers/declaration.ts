@@ -1,6 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
-import { FunctionParameter } from "../../../types/functions";
+import { FunctionParameterType } from "../../../types/types";
 import { ExpectedArrayParameter, ExpectedBlockAfterFunctionDeclaration, ExpectedObjectAndArrayParameter, ExpectedObjectParameter, ExpectedVariableDeclaration, MissingParametersDeclaration } from "../errors";
 
 type Arrow = "=>" | "=>>" | "=:>" | "=:>>";
@@ -26,7 +26,8 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             throw new MissingParametersDeclaration();
         }
 
-        const parameters: FunctionParameter<InternalInstructionNode<any>>[] = [];
+        const defaults: Record<string, InternalInstructionNode<any>> = {};
+        const parameters: FunctionParameterType[] = [];
 
         for (const child of parametersNode.context.children) {
             if (!isInstruction(child, "VariableDeclaration")) {
@@ -37,8 +38,12 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                 name: child.context.name,
                 type: child.context.variableType,
                 mutable: child.context.mutable,
-                default: child.context.value,
+                optional: !!child.context.value,
             });
+
+            if (child.context.value) {
+                defaults[child.context.name] = child.context.value;
+            }
         }
 
         const spread = spreadMap[this.arg as Arrow];
@@ -75,14 +80,14 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         return {
             instruction: "FunctionDeclaration",
             context: {
-                parameters,
                 type: {
-                    name: "function", // TODO Implement types
-                    parameters: parameters.map((parameter) => parameter.type),
+                    name: "function",
+                    parameters,
+                    spread,
                     returnType: { name: "void" }, // TODO Implement types
                 },
-                spread,
                 block,
+                defaults,
             }
         };
     }

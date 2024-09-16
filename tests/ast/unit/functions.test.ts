@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { buildAST as _buildAST } from "../../../src/ast";
 import { Context } from "../../../src/ast/types";
+import { FunctionType } from "../../../src/ast/types/types";
 
 const buildAST = (code: string) => _buildAST(code, "", false);
 
@@ -30,6 +31,6 @@ describe("AST One Function Happy Flow", () => {
 
         const context = functionNode.context as Context["FunctionDeclaration"];
 
-        expect(context.parameters.length).toBe(2);
+        expect((context.type as FunctionType).parameters.length).toBe(2);
     });
 });

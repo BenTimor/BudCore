@@ -2,7 +2,6 @@ import { ASTBuilder, InstructionNode, InstructionParser, InstructionVisitor, Ret
 import { Instructions } from "../../types/instructions";
 import { Injections } from "./injections";
 import { Type } from "./types";
-import { FunctionParameter } from "./functions";
 
 export * from "./memory";
 export * from "./injections";
@@ -31,8 +30,7 @@ export type BlockContext = {
 };
 
 export type FunctionContext = {
-    spread: "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread";
-    parameters: FunctionParameter<InternalInstructionNode<any>>[],
+    defaults: Record<string, InternalInstructionNode<any>>;
     block: InternalInstructionNode<BlockContext>,
 } & TypedContext;
 
@@ -75,7 +73,7 @@ export type Context = {
         value: InternalInstructionNode<any>;
     } & TypedContext,
     FunctionCall: {
-        identifier: string;
+        function: InternalInstructionNode<any>;
         args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]>;
     } & TypedContext,
     Number: {
@@ -84,13 +82,13 @@ export type Context = {
     FunctionDeclaration: FunctionContext,
     NativeFunction: {
         name: string,
-    } & Omit<FunctionContext, "block">,
+    } & TypedContext,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
     return node?.instruction === instruction;
 }
 
-export function isTyped(node: InternalInstructionNode<any>): node is InternalInstructionNode<TypedContext> {
-    return "context" in node && "type" in node.context;
+export function isTyped(node: InternalInstructionNode<any> | undefined): node is InternalInstructionNode<TypedContext> {
+    return node !== undefined && "context" in node && "type" in node.context;
 }

@@ -1,33 +1,8 @@
 import { readFileSync, writeFileSync } from "fs";
-import { InternalInstructionNode } from "./ast/types";
 import { buildAST } from "./ast";
 import { generateFromAST } from "./generator";
 import { ChildError } from "engine";
 import { resolve } from "path";
-
-function recursiveLogAST(node: InternalInstructionNode, tabs: number = 0) {
-    console.log(" ".repeat(tabs) + node.instruction);
-
-    if (!("context" in node)) {
-        return;
-    }
-
-    const entries = Object.entries(node.context as any) as [string, any][];
-
-    for (const [key, value] of entries) {
-        if (typeof value === "object" && "instruction" in value) {
-            recursiveLogAST(value, tabs + 2);
-        }
-        else if (Array.isArray(value) && value[0].instruction) {
-            value.forEach((val) => {
-                recursiveLogAST(val, tabs + 2);
-            });
-        }
-        else {
-            console.log(" ".repeat(tabs + 2) + `${key}: ${JSON.stringify(value)}`);
-        }
-    }
-}
 
 async function main() {
     const command = process.argv[2];
@@ -48,10 +23,6 @@ async function main() {
             try {
                 const astResp = buildAST(content, filePath);
                 writeFileSync(process.argv[4] || `${fileWithoutExtension}.json`, JSON.stringify(astResp, null, 2));
-
-                astResp.forEach((node) => {
-                    recursiveLogAST(node);
-                });
             } catch (error) {
                 if (error instanceof ChildError) {
                     console.error(error.message);

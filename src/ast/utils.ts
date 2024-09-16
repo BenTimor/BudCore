@@ -15,7 +15,7 @@ export function typesEqual(type1: Type, type2: Type): boolean {
         }
 
         for (let i = 0; i < type1.parameters.length; i++) {
-            if (!typesEqual(type1.parameters[i], type2.parameters[i])) {
+            if (!typesEqual(type1.parameters[i].type, type2.parameters[i].type)) {
                 return false;
             }
         }

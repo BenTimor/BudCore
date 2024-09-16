@@ -6,9 +6,17 @@ export type NumberType = {
     name: "number",
 };
 
+export type FunctionParameterType = {
+    name: string,
+    type: Type,
+    mutable: boolean,
+    optional: boolean,
+};
+
 export type FunctionType = {
     name: "function",
-    parameters: Type[],
+    parameters: FunctionParameterType[],
+    spread: "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread",
     returnType: Type,
 };
 

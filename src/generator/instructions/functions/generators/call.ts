@@ -36,6 +36,6 @@ export class FunctionCallGenerator extends InternalInstructionGenerator {
 
         argsStrBuilder.push("}");
 
-        return `Bud.Variables.get("${node.context.identifier}")(${argsStrBuilder.join(" ")})`;
+        return `${await this.generator.generateOne(node.context.function)}(${argsStrBuilder.join(" ")})`;
     }
 }
