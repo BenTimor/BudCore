@@ -12,6 +12,54 @@ export class Variables {
             set() {
                 throw new Error("Cannot set native variable");
             }
+        }],
+        ["NativeNumberAdd", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left + args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberSubtract", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left - args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberMultiply", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left * args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberDivide", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left / args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberModulo", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left % args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberPower", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left ** args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
         }]
     ]);
 

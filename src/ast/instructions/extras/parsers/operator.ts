@@ -14,8 +14,8 @@ export class OperatorParser extends InternalInstructionParser<Context["Operator"
     handle(): ReturnedInternalInstructionNode<Context["Operator"]> {
         const left = this.astBuilder.nodes.pop();
 
-        if (!left) {
-            throw new MissingLeftValue();
+        if (!left) {            
+            throw new MissingLeftValue(); // TODO This error was thrown when I had a wrong operator in the operator before the current one
         }
 
         if (!isTyped(left)) {
