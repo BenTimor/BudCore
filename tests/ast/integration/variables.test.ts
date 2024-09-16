@@ -75,4 +75,24 @@ describe('AST Data In Variables', () => {
         expect(operatorContext.left.instruction).toBe("VariableRead");
         expect(operatorContext.right.instruction).toBe("VariableRead");
     });
+
+    test("Assigning arrays to variables", () => {
+        const code = "set a = [1; 2; 3];";
+        const ast = buildAST(code);
+
+        expect(ast.length).toBe(1);
+
+        const varNode = ast[0];
+
+        expect(varNode.instruction).toBe("VariableDeclaration");
+
+        const varContext = varNode.context as Context["VariableDeclaration"];
+
+        expect(varContext).toBeDefined();
+        expect(varContext.value?.instruction).toBe("Array");
+
+        const arrayContext = (varContext.value as InternalInstructionNode<Context["Array"]>).context;
+
+        expect(arrayContext.children.length).toBe(3);
+    });
 });

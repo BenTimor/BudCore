@@ -31,7 +31,7 @@ export class ArrayParser extends InternalInstructionParser<Context["Array"]> {
             memory: new Memory(this.injection.memory),
         }
 
-        const children = this.nextChildren(undefined, ["ArrayEnd"]);
+        const children = this.nextChildren(undefined, ["ArrayEnd"]).filter(child => child.instruction !== "Semicolon");
 
         children.pop(); // Remove the last element, which is the closing parenthesis
 
