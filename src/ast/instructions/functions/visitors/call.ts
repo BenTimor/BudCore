@@ -13,7 +13,8 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
             throw new CompilerError("There was an error parsing the function call. Could not find the variable read or parentheses while handling the function call");
         }
 
-        const functionNode = this.astBuilder.getNode(variableRead.context.identifier) as InternalInstructionNode<Context["FunctionDeclaration"]>; // TODO Validate type and allow all sort of types who return function
+        const varDeclarationNode = this.astBuilder.getNode(variableRead.context.identifier) as InternalInstructionNode<Context["VariableDeclaration"]>; // TODO Validate type and allow all sort of types who return function
+        const functionNode = varDeclarationNode.context.value as InternalInstructionNode<Context["FunctionDeclaration"]>;
 
         let args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]> = {};
 
@@ -37,7 +38,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                 }
 
                 if (functionNode.context.spread === "AllSpread" || functionNode.context.spread === "ObjectSpread") {
-                    const objParam = functionNode.context.parameters.at(-1); 
+                    const objParam = functionNode.context.parameters.at(-1);
 
                     if (!objParam) {
                         throw new InvalidFunctionParameter();
@@ -105,20 +106,20 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
 
                 args[functionNode.context.parameters[childIndex].name] = child; // TODO Type validations
             }
-
-            const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
-                instruction: "FunctionCall",
-                endsAt: parentheses.endsAt,
-                context: {
-                    args,
-                    identifier: variableRead.context.identifier,
-                    type: {
-                        name: "void",
-                    }, // TODO Fix types
-                }
-            };
-
-            this.astBuilder.nodes.push(functionCallNode);
         }
+        
+        const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
+            instruction: "FunctionCall",
+            endsAt: parentheses.endsAt,
+            context: {
+                args,
+                identifier: variableRead.context.identifier,
+                type: {
+                    name: "void",
+                }, // TODO Fix types
+            }
+        };
+
+        this.astBuilder.nodes.push(functionCallNode);
     }
 }

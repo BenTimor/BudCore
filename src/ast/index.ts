@@ -67,6 +67,27 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
         endsAt: -1,
         context: {
             name: "log",
+            spread: "NoSpread",
+            parameters: [
+                {
+                    name: "value",
+                    type: {
+                        name: "number"
+                    },
+                    mutable: false,
+                }
+            ],
+            type: {
+                name: "function",
+                parameters: [
+                    {
+                        name: "number",
+                    }
+                ],
+                returnType: {
+                    name: "void",
+                }
+            }
         }
     };
 
@@ -81,10 +102,7 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
                 name: "function",
                 parameters: [
                     {
-                        name: "array",
-                        elementType: {
-                            name: "any",
-                        }
+                        name: "number",
                     }
                 ],
                 returnType: {

@@ -30,6 +30,12 @@ export type BlockContext = {
     children: InternalInstructionNode<any>[];
 };
 
+export type FunctionContext = {
+    spread: "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread";
+    parameters: FunctionParameter<InternalInstructionNode<any>>[],
+    block: InternalInstructionNode<BlockContext>,
+} & TypedContext;
+
 // TODO Move to a separate file
 export type Context = {
     Parentheses: {
@@ -69,14 +75,10 @@ export type Context = {
     Number: {
         value: number;
     } & TypedContext,
-    FunctionDeclaration: {
-        spread: "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread";
-        parameters: FunctionParameter<InternalInstructionNode<any>>[],
-        block: InternalInstructionNode<BlockContext>,
-    } & TypedContext,
+    FunctionDeclaration: FunctionContext,
     NativeFunction: {
-        name: string;
-    },
+        name: string,
+    } & Omit<FunctionContext, "block">,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: InternalInstructionNode<any> | undefined, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
