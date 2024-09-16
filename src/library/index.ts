@@ -20,6 +20,10 @@ export class Variables {
     }
 
     static set(key: string, value: any) {
+        if (Variables.variables.has(key)) {
+            return Variables.variables.get(key)?.set(value);
+        }
+
         Variables.variables.set(key, new class implements VariableProxy { // TODO Add type safety and immutability
             private value = value;
 

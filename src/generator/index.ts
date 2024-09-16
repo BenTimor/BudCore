@@ -13,7 +13,9 @@ const generator = new Generator([
     ...primitiveGenerators,
     ...functionGenerators,
     ...extrasGenerators,
-]);
+], {
+    join: "\n",
+});
 
 export async function generateFromAST(ast: InternalInstructionNode[]) {
     const res = await generator.generate(ast);
