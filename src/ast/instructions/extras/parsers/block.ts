@@ -4,6 +4,7 @@ import { MissingBlockEnd } from "../errors";
 
 export class BlockEndParser extends InternalInstructionParser {
     instruction: Instructions = "BlockEnd";
+    limited: boolean = true;
 
     check(): boolean {
         return this.arg === "}";

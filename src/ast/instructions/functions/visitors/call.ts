@@ -25,7 +25,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
         for (let childIndex = 0; childIndex < parenthesesChildren.length; childIndex++) {
             const child = parenthesesChildren[childIndex];
 
-            if (isInstruction(child, "VariableDeclaration")) {
+            if (isInstruction(child, "VariableDeclaration")) {                
                 hasNamedArg = true;
 
                 if (!child.context.value) {
@@ -67,7 +67,9 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                 throw new InvalidFunctionParameter();
             }
             else {
-                if (hasNamedArg || childIndex >= functionNode.context.parameters.length) {
+                const lengthOffset = functionNode.context.spread === "AllSpread" ? 2 : (functionNode.context.spread === "ArraySpread" ? 1 : 0);
+
+                if (hasNamedArg || childIndex >= functionNode.context.parameters.length - lengthOffset) {
                     let arrParam;
 
                     if (functionNode.context.spread === "AllSpread") {
@@ -87,27 +89,33 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                     const arrParamName = arrParam.name;
 
                     if (!args[arrParamName]) {
-                        const argDeclaration: InternalInstructionNode<Context["VariableDeclaration"]> = {
-                            instruction: "VariableDeclaration",
+                        const arrayDeclaration: InternalInstructionNode<Context["Array"]> = {
+                            instruction: "Array",
                             endsAt: -1,
                             context: {
-                                name: arrParamName,
-                                value: [] as any, // TODO Add array node and integrate it
-                                mutable: arrParam.mutable,
-                                variableType: arrParam.type,
+                                children: [],
+                                type: {
+                                    name: "array",
+                                    elementType: (arrParam.type as any /* TODO Rethink how to handle those types, maybe add validation */).elementType,
+                                }
                             }
                         };
 
-                        args[arrParamName] = argDeclaration;
+                        args[arrParamName] = arrayDeclaration;
                     }
 
-                    throw new CompilerError("Not implemented yet");
-                }
+                    if (!isInstruction(args[arrParamName], "Array")) {
+                        throw new CompilerError("The array parameter is not an array");
+                    }
 
-                args[functionNode.context.parameters[childIndex].name] = child; // TODO Type validations
+                    args[arrParamName].context.children.push(child);
+                }
+                else {
+                    args[functionNode.context.parameters[childIndex].name] = child; // TODO Type validations
+                }
             }
         }
-        
+
         const functionCallNode: InternalInstructionNode<Context["FunctionCall"]> = {
             instruction: "FunctionCall",
             endsAt: parentheses.endsAt,

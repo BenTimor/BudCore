@@ -61,18 +61,22 @@ function astBuilderFactory(filePath: string) {
     });
 }
 
+// TODO This probably should be moved to the natives or something
 export function injectGlobals(astBuilder: InternalASTBuilder) {
     const logNativeFunction: InternalInstructionNode<Context["NativeFunction"]> = {
         instruction: "NativeFunction",
         endsAt: -1,
         context: {
             name: "log",
-            spread: "NoSpread",
+            spread: "ArraySpread",
             parameters: [
                 {
-                    name: "value",
+                    name: "values",
                     type: {
-                        name: "number"
+                        name: "array",
+                        elementType: {
+                            name: "any",
+                        }
                     },
                     mutable: false,
                 }
@@ -81,7 +85,10 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
                 name: "function",
                 parameters: [
                     {
-                        name: "number",
+                        name: "array",
+                        elementType: {
+                            name: "any",
+                        }
                     }
                 ],
                 returnType: {
@@ -98,17 +105,7 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
         context: {
             name: "log",
             mutable: false,
-            variableType: {
-                name: "function",
-                parameters: [
-                    {
-                        name: "number",
-                    }
-                ],
-                returnType: {
-                    name: "void",
-                }
-            },
+            variableType: logNativeFunction.context.type,
             value: logNativeFunction,
         },
     };

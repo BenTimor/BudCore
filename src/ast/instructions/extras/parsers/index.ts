@@ -1,3 +1,4 @@
+import { ArrayEndParser, ArrayParser } from "./array";
 import { BlockEndParser, BlockParser } from "./block";
 import { EqualsParser } from "./equals";
 import { OperatorParser } from "./operator";
@@ -14,4 +15,6 @@ export const extrasInstructions = [
     BlockParser,
     BlockEndParser,
     ProxyParser,
+    ArrayParser,
+    ArrayEndParser,
 ];

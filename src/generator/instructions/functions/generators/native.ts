@@ -2,7 +2,7 @@ import { CompilerError, InternalInstructionNode, isInstruction } from "../../../
 import { InternalInstructionGenerator } from "../../../types";
 
 const functions: Record<string, string> = {
-    log: "console.log",
+    log: "NativeLog",
 }
 
 export class NativeFunctionGenerator extends InternalInstructionGenerator {
@@ -15,6 +15,6 @@ export class NativeFunctionGenerator extends InternalInstructionGenerator {
             throw new CompilerError("Invalid native function node");
         }
 
-        return functions[node.context.name] as string;    
+        return `Bud.Variables.get("${functions[node.context.name]}")`;    
     }
 }

@@ -1,6 +1,10 @@
 import { Type } from "./types/types";
 
 export function typesEqual(type1: Type, type2: Type): boolean {
+    if (type1.name === "any" || type2.name === "any") {
+        return true;
+    }
+
     if (type1.name !== type2.name) {
         return false;
     }

@@ -6,4 +6,6 @@ export type ExtrasInstructions =
     | "ParenthesesEnd"
     | "Proxy"
     | "Block"
-    | "BlockEnd";
+    | "BlockEnd"
+    | "Array"
+    | "ArrayEnd";

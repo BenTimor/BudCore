@@ -41,6 +41,12 @@ export type Context = {
     Parentheses: {
         children: InternalInstructionNode<any>[];
     } & TypedContext,
+    Array: {
+        children: InternalInstructionNode<any>[];
+        type: {
+            name: "array",
+        }
+    } & TypedContext,
     Operator: {
         left: InternalInstructionNode<any>;
         right: InternalInstructionNode<any>;
@@ -81,7 +87,7 @@ export type Context = {
     } & Omit<FunctionContext, "block">,
 }
 
-export function isInstruction<Instruction extends Instructions>(node: InternalInstructionNode<any> | undefined, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
+export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
     return node?.instruction === instruction;
 }
 
