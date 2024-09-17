@@ -71,6 +71,13 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             }
         }
 
+        this.injection = {
+            ...this.injection,
+            memory: this.injection.memory.scope(),
+        };
+
+        
+
         const block = this.next(["Block"]);
 
         if (!isInstruction(block, "Block")) {

@@ -5,7 +5,8 @@ import { InternalInstructionNode } from "../ast/types";
 
 // TODO Import a library and not a file
 const start = `
-const Bud = require("bud");
+const { Bud } = require("bud");
+const bud = new Bud();
 `;
 
 const generator = new Generator([
@@ -14,7 +15,11 @@ const generator = new Generator([
     ...functionGenerators,
     ...extrasGenerators,
 ], {
-    join: "\n",
+    generator: {
+        join: "\n, ",
+        prefix: "bud.scope(bud => [",
+        suffix: "])",
+    },
 });
 
 export async function generateFromAST(ast: InternalInstructionNode[]) {

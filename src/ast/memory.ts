@@ -33,6 +33,10 @@ export class Memory implements IMemory {
 
         return this.memory[key] ?? this.parent?.get(key, false);
     }
+
+    scope() {
+        return new Memory(this);
+    }
 }
 
 export class Globals implements IMemory {
@@ -46,5 +50,9 @@ export class Globals implements IMemory {
 
     get<K extends keyof MemoryStorage>(key: K, forceCurrent: boolean): MemoryStorage[K] {
         return Globals.memory[key];
+    }
+
+    scope(): IMemory {
+        throw new Error("Globals cannot be scoped");
     }
 }

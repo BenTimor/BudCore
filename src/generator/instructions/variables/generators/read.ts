@@ -7,6 +7,6 @@ export class VariableReadGenerator extends InternalInstructionGenerator {
     }
 
     async handle(node: InternalInstructionNode<Context["VariableRead"]>) {
-        return `Bud.Variables.get("${node.context.identifier}")`;
+        return `bud.variables.get("${node.context.identifier}")`;
     }
 }

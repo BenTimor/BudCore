@@ -11,6 +11,6 @@ export class NativeFunctionGenerator extends InternalInstructionGenerator {
             throw new CompilerError("Invalid native function node");
         }
 
-        return `Bud.Variables.get("${node.context.name}")`;    
+        return `bud.variables.get("${node.context.name}")`;    
     }
 }

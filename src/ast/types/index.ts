@@ -32,6 +32,9 @@ export type BlockContext = {
 export type FunctionContext = {
     defaults: Record<string, InternalInstructionNode<any>>;
     block: InternalInstructionNode<BlockContext>,
+    type: {
+        name: "function",
+    },
 } & TypedContext;
 
 // TODO Move to a separate file
