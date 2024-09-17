@@ -11,15 +11,15 @@ export type InternalInstructionNode<Context = undefined> = InstructionNode<Instr
 
 export type ReturnedInternalInstructionNode<Context = undefined> = ReturnedInstructionNode<Instructions, Context>;
 
-export abstract class InternalInstructionParser<Context = undefined> extends InstructionParser<Instructions, Context, Injections> {
+export abstract class InternalInstructionParser<Context = undefined> extends InstructionParser<Instructions, Context, Injections<InternalInstructionNode<unknown>>> {
     trace(cords: [number, number]): string {
         return `  > ${this.instruction} at ${this.injection.filePath}:${cords[0]}:${cords[1]}`;
     }
 }
 
-export class InternalASTBuilder extends ASTBuilder<Instructions, Injections> { }
+export class InternalASTBuilder extends ASTBuilder<Instructions, Injections<InternalInstructionNode<unknown>>> { }
 
-export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections> { }
+export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections<InternalInstructionNode<unknown>>> { }
 
 export type TypedContext = {
     type: Type;
@@ -85,6 +85,9 @@ export type Context = {
     FunctionDeclaration: FunctionContext,
     NativeFunction: {
         name: string,
+    } & TypedContext,
+    Literal: {
+        value: string;
     } & TypedContext,
 }
 

@@ -1,6 +1,7 @@
 import { IMemory } from "./memory";
 
-export type Injections = {
+export type Injections<InternalInstructionNode> = {
     memory: IMemory,
-    filePath: string
+    filePath: string,
+    blockPrefixElements: InternalInstructionNode[],
 };

@@ -25,7 +25,10 @@ export class BlockParser extends InternalInstructionParser<Context["Block"]> {
     }
 
     handle(): ReturnedInternalInstructionNode<Context["Block"]> {
-        const children = this.nextChildren(undefined, ["BlockEnd"], () => new MissingBlockEnd());
+        const children = this.nextChildren(undefined, ["BlockEnd"], {
+            missingStopError: () => new MissingBlockEnd(),
+            childrenPrefix: this.injection.blockPrefixElements,
+        });
 
         children.pop(); // Remove the BlockEnd
 

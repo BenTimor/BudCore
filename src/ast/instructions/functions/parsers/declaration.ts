@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
 import { FunctionParameterType } from "../../../types/types";
@@ -19,7 +20,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         return this.arg === "=>" || this.arg === "=>>" || this.arg === "=:>" || this.arg === "=:>>";
     }
 
-    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> {             
+    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> {
         const parametersNode = this.astBuilder.nodes.pop();
 
         if (!isInstruction(parametersNode, "Parentheses")) {
@@ -71,12 +72,49 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             }
         }
 
+        const memoryScope = this.injection.memory.scope();
+
+        const paramVariableList: InternalInstructionNode<Context["VariableDeclaration"]>[] = parameters.map(param => {
+            // TODO This is duplicate code from VariableDeclarationParser
+            let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
+
+            // Ensure the identifier is unique
+            while (this.astBuilder.getNode(identifier)) {
+                identifier = `VAR_DECLARATION_${nanoid()}`;
+            }
+
+            const literalValue: InternalInstructionNode<Context["Literal"]> = {
+                instruction: "Literal",
+                endsAt: -1,
+                context: {
+                    value: param.name,
+                    type: param.type,
+                }
+            };
+
+            memoryScope.set(`VAR_${param.name}`, identifier, true);
+
+            return {
+                instruction: "VariableDeclaration",
+                endsAt: -1,
+                context: {
+                    name: param.name,
+                    mutable: param.mutable,
+                    variableType: param.type,
+                    value: literalValue,
+                },
+                identifier,
+            }
+        });
+        
         this.injection = {
             ...this.injection,
-            memory: this.injection.memory.scope(),
+            memory: memoryScope,
+            blockPrefixElements: [
+                ...this.injection.blockPrefixElements,
+                ...paramVariableList,
+            ]
         };
-
-        
 
         const block = this.next(["Block"]);
 

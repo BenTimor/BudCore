@@ -50,13 +50,14 @@ function astBuilderFactory(filePath: string) {
     ], {
         memory: new Memory(new Globals()),
         filePath,
+        blockPrefixElements: [],
     }, {
         spaceOut: stringsToSpaceOut,
         errors: {
             missingStopInstruction: (stopAt: Instructions[]) => {
                 throw new MissingInstructions(stopAt);
             },
-            instructionDoesntExist: (token: string, _tokenIndex: number, _tokens: string[], cords: number[], inject: Injections) => {
+            instructionDoesntExist: (token: string, _tokenIndex: number, _tokens: string[], cords: number[], inject: Injections<InternalInstructionNode<unknown>>) => {
                 throw new InstructionNotFound(token, inject.filePath, cords);
             }
         }
