@@ -86,4 +86,25 @@ describe('AST Functions and Variables integration', () => {
 
         expect(Object.keys(callContext.args).length).toBe(1);
     });
+    
+    test("Should allow recursion", () => {
+        const code = `set a = () => { a(); };`;
+
+        const ast = buildAST(code);
+
+        const varNode = ast[0];
+
+        expect(varNode.instruction).toBe("VariableDeclaration");
+
+        const varContext = varNode.context as Context["VariableDeclaration"];
+
+        expect(varContext).toBeDefined();
+        expect(varContext.value?.instruction).toBe("FunctionDeclaration");
+
+        const funcContext = (varContext.value as any)?.context as Context["FunctionDeclaration"];
+
+        const callNode = funcContext.block.context.children[0];
+
+        expect(callNode.instruction).toBe("FunctionCall");
+    });
 });
