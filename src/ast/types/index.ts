@@ -19,7 +19,11 @@ export abstract class InternalInstructionParser<Context = undefined> extends Ins
 
 export class InternalASTBuilder extends ASTBuilder<Instructions, Injections<InternalInstructionNode<unknown>>> { }
 
-export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections<InternalInstructionNode<unknown>>> { }
+export abstract class InternalInstructionVisitor extends InstructionVisitor<Instructions, Injections<InternalInstructionNode<unknown>>> {
+    trace(cords: [number, number]): string {
+        return `  > Visitor at ${this.injection.filePath}:${cords[0]}:${cords[1]}`; // TODO Maybe add name or something
+    }
+}
 
 export type TypedContext = {
     type: Type;

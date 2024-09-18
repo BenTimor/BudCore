@@ -20,7 +20,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         return this.arg === "=>" || this.arg === "=>>" || this.arg === "=:>" || this.arg === "=:>>";
     }
 
-    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> {
+    handle(): ReturnedInternalInstructionNode<Context["FunctionDeclaration"]> | null {
         const parametersNode = this.astBuilder.nodes.pop();
 
         if (!isInstruction(parametersNode, "Parentheses")) {
@@ -116,13 +116,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
             ]
         };
 
-        const block = this.next(["Block"]);
-
-        if (!isInstruction(block, "Block")) {
-            throw new ExpectedBlockAfterFunctionDeclaration();
-        }
-
-        return {
+        const functionNode: InternalInstructionNode<Context["FunctionDeclaration"]> = {
             instruction: "FunctionDeclaration",
             context: {
                 type: {
@@ -131,9 +125,23 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                     spread,
                     returnType: { name: "void" }, // TODO Implement types
                 },
-                block,
                 defaults,
-            }
+                block: {} as any, // TODO Rethink what should be here
+            },
+            endsAt: this.nextIndex,
         };
+
+        this.astBuilder.addNode(functionNode);
+
+        const block = this.next(["Block"]);
+
+        if (!isInstruction(block, "Block")) {
+            throw new ExpectedBlockAfterFunctionDeclaration();
+        }
+
+        functionNode.context.block = block;
+        functionNode.endsAt = this.nextIndex;
+
+        return null;
     }
 }

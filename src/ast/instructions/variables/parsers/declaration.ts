@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { VariablesInstructions } from "../../../../types";
-import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 import { MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
 
 export class VariableDeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
@@ -10,7 +10,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
         return this.arg === "set";
     }
 
-    handle(): ReturnedInternalInstructionNode<Context["VariableDeclaration"]> {
+    handle(): ReturnedInternalInstructionNode<Context["VariableDeclaration"]> | null {
         let next = this.next(["VariableName", "VariableMutable"]);
 
         let mutable: boolean = false;
@@ -69,6 +69,23 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
             throw new MissingEqualsSign();
         }
 
+        const varDeclarationNode: InternalInstructionNode<Context["VariableDeclaration"]> = {
+            instruction: "VariableDeclaration",
+            identifier: identifier,
+            context: {
+                name: name,
+                mutable,
+                variableType: {
+                    name: "any",
+                },
+            },
+            endsAt: this.nextIndex,
+        };
+
+        this.injection.memory.set(`VAR_${name}`, identifier, true);
+
+        this.astBuilder.addNode(varDeclarationNode);
+
         const values = this.nextChildren(undefined, ["Semicolon"]);
 
         if (values.length === 1) {
@@ -81,19 +98,12 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
 
         const value = values[0];
 
-        this.injection.memory.set(`VAR_${name}`, identifier, true);
-
-        return {
-            instruction: "VariableDeclaration",
-            identifier: identifier,
-            context: {
-                name: name,
-                mutable,
-                value: value,
-                variableType: isTyped(value) ? value.context.type : {
-                    name: "void",
-                },
-            },
+        varDeclarationNode.context.variableType = isTyped(value) ? value.context.type : {
+            name: "void",
         };
+        varDeclarationNode.context.value = value;
+        varDeclarationNode.endsAt = value.endsAt;
+
+        return null;
     }
 }

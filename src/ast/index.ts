@@ -1,5 +1,5 @@
 import { primitivesInstructions } from "./instructions/primitives";
-import { variablesInstructions } from "./instructions/variables";
+import { variablesInstructions, variableVisitors } from "./instructions/variables";
 import { BudError, Context, Injections, InternalASTBuilder, InternalInstructionNode } from "./types";
 import { Globals, Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
@@ -39,14 +39,15 @@ const stringsToSpaceOut = [
     "...",
 ]
 
-function astBuilderFactory(filePath: string) {
-    return new InternalASTBuilder([
+function astBuilderFactory(content: string, filePath: string) {
+    return new InternalASTBuilder(content, [
         ...variablesInstructions,
         ...primitivesInstructions,
         ...functionsInstructions,
         ...extrasInstructions,
     ], [
         ...functionVisitors,
+        ...variableVisitors,
     ], {
         memory: new Memory(new Globals()),
         filePath,
@@ -110,13 +111,13 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
 }
 
 export function buildAST(content: string, filePath: string = "", shouldInjectGlobals: boolean = true) {
-    const astBuilder = astBuilderFactory(filePath);
+    const astBuilder = astBuilderFactory(content, filePath);
 
     if (shouldInjectGlobals) {
         injectGlobals(astBuilder);
     }
 
-    const ast = astBuilder.fromContent(content);
+    const ast = astBuilder.build();
 
     return ast;
 }
