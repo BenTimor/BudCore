@@ -17,6 +17,6 @@ export class ProcessingTypeVisitor extends InternalInstructionVisitor {
             throw new CompilerError("There was an error parsing the function declaration. Could not find the function declaration or variable declaration while handling the function declaration");
         }
 
-        parentLastNode.context.variableType = currNode.context.type;
+        parentLastNode.context.type = currNode.context.type;
     }
 }

@@ -21,7 +21,7 @@ export class VariableReadParser extends InternalInstructionParser<Context["Varia
             instruction: "VariableRead",
             context: {
                 identifier: varIdentifier,
-                type: varNode.context.variableType,
+                type: varNode.context.type,
             },
         };
     }

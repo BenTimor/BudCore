@@ -70,8 +70,7 @@ export type Context = {
         value?: InternalInstructionNode<any>;
         name: string;
         mutable: boolean;
-        variableType: Type;
-    },
+    } & TypedContext,
     VariableName: {
         name: string;
     },
@@ -93,6 +92,7 @@ export type Context = {
     Literal: {
         value: string;
     } & TypedContext,
+    Type: TypedContext,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

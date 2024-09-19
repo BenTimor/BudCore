@@ -102,7 +102,7 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
         context: {
             name: "log",
             mutable: false,
-            variableType: logNativeFunction.context.type,
+            type: logNativeFunction.context.type,
             value: logNativeFunction,
         },
     };

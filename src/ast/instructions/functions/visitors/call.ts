@@ -52,7 +52,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                                 name: objParamName,
                                 value: {} as any, // TODO Add object node and integrate it
                                 mutable: objParam.mutable,
-                                variableType: objParam.type,
+                                type: objParam.type,
                             }
                         };
 

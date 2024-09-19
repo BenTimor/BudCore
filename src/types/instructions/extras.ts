@@ -9,4 +9,5 @@ export type ExtrasInstructions =
     | "BlockEnd"
     | "Array"
     | "ArrayEnd"
-    | "Literal";
+    | "Literal"
+    | "Type";

@@ -37,7 +37,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
 
             parameters.push({
                 name: child.context.name,
-                type: child.context.variableType,
+                type: child.context.type,
                 mutable: child.context.mutable,
                 optional: !!child.context.value,
             });
@@ -100,7 +100,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                 context: {
                     name: param.name,
                     mutable: param.mutable,
-                    variableType: param.type,
+                    type: param.type,
                     value: literalValue,
                 },
                 identifier,
