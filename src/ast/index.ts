@@ -5,6 +5,7 @@ import { Globals, Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
 import { functionsInstructions, functionVisitors } from "./instructions/functions";
 import { Instructions } from "../types";
+import { nativeNodes } from "./native";
 
 class InstructionNotFound extends BudError {
     constructor(instruction: string, filePath: string, cords: number[]) {
@@ -66,78 +67,10 @@ function astBuilderFactory(content: string, filePath: string) {
     });
 }
 
-// TODO This probably should be moved to the natives or something
 export function injectGlobals(astBuilder: InternalASTBuilder) {
-    // log function
-    const logNativeFunction: InternalInstructionNode<Context["NativeFunction"]> = {
-        instruction: "NativeFunction",
-        endsAt: -1,
-        context: {
-            name: "NativeLog",
-            type: {
-                name: "function",
-                spread: "ArraySpread",
-                parameters: [
-                    {
-                        name: "values",
-                        type: {
-                            name: "array",
-                            elementType: {
-                                name: "any",
-                            }
-                        },
-                        mutable: false,
-                        optional: false,
-                    }
-                ],
-                returnType: {
-                    name: "void",
-                }
-            }
-        }
-    };
-
-    const logVariable: InternalInstructionNode<Context["VariableDeclaration"]> = {
-        instruction: "VariableDeclaration",
-        identifier: "VAR_DECLARATION_NATIVE_LOG",
-        endsAt: -1,
-        context: {
-            name: "log",
-            mutable: false,
-            type: logNativeFunction.context.type,
-            value: logNativeFunction,
-        },
-    };
-
-    astBuilder.addNode(logVariable);
-
-    // number type
-    const numberType: InternalInstructionNode<Context["Type"]> = {
-        instruction: "Type",
-        endsAt: -1,
-        context: {
-            type: {
-                name: "type",
-                type: {
-                    name: "number",
-                }
-            }
-        },
-    };
-
-    const numberTypeVariable: InternalInstructionNode<Context["VariableDeclaration"]> = {
-        instruction: "VariableDeclaration",
-        identifier: "VAR_DECLARATION_NUMBER_TYPE",
-        endsAt: -1,
-        context: {
-            name: "number",
-            mutable: false,
-            type: numberType.context.type,
-            value: numberType,
-        },
-    };
-
-    astBuilder.addNode(numberTypeVariable);
+    for (const node of nativeNodes) {
+        astBuilder.addNode(node);
+    }
 }
 
 export function buildAST(content: string, filePath: string = "", shouldInjectGlobals: boolean = true) {
