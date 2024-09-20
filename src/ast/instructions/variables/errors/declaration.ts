@@ -11,3 +11,9 @@ export class VariableAlreadyExists extends BudError {
         super("VariableAlreadyExists", "Variable already exists");
     }
 }
+
+export class InvalidVariableDeclaration extends BudError {
+    constructor() {
+        super("InvalidVariableDeclaration", "Invalid variable declaration");
+    }
+}

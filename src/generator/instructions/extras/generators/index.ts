@@ -4,6 +4,7 @@ import { LiteralGenerator } from "./literal";
 import { OperatorsGenerator } from "./operators";
 import { ParenthesesGenerator } from "./parentheses";
 import { SemicolonGenerator } from "./semicolon";
+import { TypeGenerator } from "./types";
 
 export const extrasGenerators = [
     SemicolonGenerator,
@@ -12,4 +13,5 @@ export const extrasGenerators = [
     ParenthesesGenerator,
     BlockGenerator,
     LiteralGenerator,
+    TypeGenerator,
 ];

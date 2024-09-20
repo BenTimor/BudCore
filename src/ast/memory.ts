@@ -42,6 +42,7 @@ export class Memory implements IMemory {
 export class Globals implements IMemory {
     private static memory: MemoryStorage = {
         "VAR_log": "VAR_DECLARATION_NATIVE_LOG",
+        "VAR_number": "VAR_DECLARATION_NUMBER_TYPE",
     };
 
     set<K extends keyof MemoryStorage>(key: K, value: MemoryStorage[K], forceCurrent: boolean): void {

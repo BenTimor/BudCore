@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { VariablesInstructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
+import { InvalidVariableDeclaration, MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
 
 export class VariableDeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
     instruction: VariablesInstructions = "VariableDeclaration";
@@ -40,7 +40,19 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
             throw new VariableAlreadyExists();
         }
 
-        const equalsOrSemicolon = this.next(["Equals", "Semicolon"]);
+        const assignment = this.nextChildren(undefined, ["Semicolon", "Equals"]);
+
+        let type: InternalInstructionNode<Context["Type"]> | undefined;
+
+        if (isInstruction(assignment[0], "Type")) {
+            type = assignment.shift() as InternalInstructionNode<Context["Type"]>;
+        }
+
+        if (assignment.length !== 1) {
+            throw new InvalidVariableDeclaration();
+        }
+
+        const equalsOrSemicolon = assignment[0];
 
         let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
 
@@ -58,7 +70,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
                 context: {
                     name: name,
                     mutable,
-                    type: {
+                    type: type ? type.context.type.type : {
                         name: "void",
                     },
                 },
@@ -75,7 +87,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
             context: {
                 name: name,
                 mutable,
-                type: {
+                type: type ? type.context.type.type : {
                     name: "any",
                 },
             },
@@ -98,9 +110,11 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
 
         const value = values[0];
 
-        varDeclarationNode.context.type = isTyped(value) ? value.context.type : {
+        // TODO Validate the content type
+
+        varDeclarationNode.context.type = type ? type.context.type.type : (isTyped(value) ? value.context.type : {
             name: "void",
-        };
+        });
         varDeclarationNode.context.value = value;
         varDeclarationNode.endsAt = value.endsAt;
 

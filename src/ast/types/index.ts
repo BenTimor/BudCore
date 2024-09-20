@@ -92,7 +92,11 @@ export type Context = {
     Literal: {
         value: string;
     } & TypedContext,
-    Type: TypedContext,
+    Type: {
+        type: {
+            name: "type",
+        }
+    } & TypedContext,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

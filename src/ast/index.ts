@@ -37,6 +37,7 @@ const stringsToSpaceOut = [
     "=:>",
     "=:>>",
     "...",
+    ":",
 ]
 
 function astBuilderFactory(content: string, filePath: string) {
@@ -67,6 +68,7 @@ function astBuilderFactory(content: string, filePath: string) {
 
 // TODO This probably should be moved to the natives or something
 export function injectGlobals(astBuilder: InternalASTBuilder) {
+    // log function
     const logNativeFunction: InternalInstructionNode<Context["NativeFunction"]> = {
         instruction: "NativeFunction",
         endsAt: -1,
@@ -108,6 +110,34 @@ export function injectGlobals(astBuilder: InternalASTBuilder) {
     };
 
     astBuilder.addNode(logVariable);
+
+    // number type
+    const numberType: InternalInstructionNode<Context["Type"]> = {
+        instruction: "Type",
+        endsAt: -1,
+        context: {
+            type: {
+                name: "type",
+                type: {
+                    name: "number",
+                }
+            }
+        },
+    };
+
+    const numberTypeVariable: InternalInstructionNode<Context["VariableDeclaration"]> = {
+        instruction: "VariableDeclaration",
+        identifier: "VAR_DECLARATION_NUMBER_TYPE",
+        endsAt: -1,
+        context: {
+            name: "number",
+            mutable: false,
+            type: numberType.context.type,
+            value: numberType,
+        },
+    };
+
+    astBuilder.addNode(numberTypeVariable);
 }
 
 export function buildAST(content: string, filePath: string = "", shouldInjectGlobals: boolean = true) {

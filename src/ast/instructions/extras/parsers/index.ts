@@ -5,6 +5,7 @@ import { OperatorParser } from "./operator";
 import { ParenthesesEndParser, ParenthesesParser } from "./parentheses";
 import { ProxyParser } from "./proxy";
 import { SemicolonParser } from "./semicolon";
+import { TypeParser } from "./type";
 
 export const extrasInstructions = [
     SemicolonParser,
@@ -17,4 +18,5 @@ export const extrasInstructions = [
     ProxyParser,
     ArrayParser,
     ArrayEndParser,
+    TypeParser,
 ];
