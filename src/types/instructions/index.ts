@@ -1,3 +1,4 @@
+import { ConditionInstructions } from "./conditions";
 import { ExtrasInstructions } from "./extras";
 import { FunctionsInstructions } from "./functions";
 import { NativeInstructions } from "./native";
@@ -9,7 +10,8 @@ export type Instructions =
     | PrimitivesInstructions
     | ExtrasInstructions
     | FunctionsInstructions
-    | NativeInstructions;
+    | NativeInstructions
+    | ConditionInstructions;
 
 export * from "./variables";
 export * from "./primitives";

@@ -2,6 +2,7 @@ import { Generator } from "engine";
 import { extrasGenerators, functionGenerators, primitiveGenerators, variableGenerators } from "./instructions";
 import { readFileSync, writeFileSync } from "fs";
 import { InternalInstructionNode } from "../ast/types";
+import { conditionGenerators } from "./instructions/conditions";
 
 // TODO Import a library and not a file
 const start = `
@@ -14,6 +15,7 @@ const generator = new Generator([
     ...primitiveGenerators,
     ...functionGenerators,
     ...extrasGenerators,
+    ...conditionGenerators,
 ], {
     generator: {
         join: "\n, ",

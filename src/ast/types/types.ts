@@ -44,6 +44,10 @@ export type StringType = {
     name: "string",
 }
 
+export type BooleanType = {
+    name: "boolean",
+};
+
 export type StructType = {
     name: "struct",
     fields: Record<string, Type>,
@@ -68,6 +72,7 @@ export type Type =
     | ArrayType
     | ObjectType
     | StringType
+    | BooleanType
     | StructType
     | ReferenceType
     | TypeType

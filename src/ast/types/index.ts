@@ -100,6 +100,10 @@ export type Context = {
     String: {
         value: string;
     } & TypedContext,
+    If: {
+        condition: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
+        block: InternalInstructionNode<BlockContext>;
+    }
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

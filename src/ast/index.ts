@@ -6,6 +6,7 @@ import { extrasInstructions } from "./instructions/extras";
 import { functionsInstructions, functionVisitors } from "./instructions/functions";
 import { Instructions } from "../types";
 import { nativeNodes } from "./native";
+import { conditionInstructions } from "./instructions/conditions";
 
 class InstructionNotFound extends BudError {
     constructor(instruction: string, filePath: string, cords: number[]) {
@@ -50,6 +51,7 @@ function astBuilderFactory(content: string, filePath: string) {
         ...primitivesInstructions,
         ...functionsInstructions,
         ...extrasInstructions,
+        ...conditionInstructions,
     ], [
         ...functionVisitors,
         ...variableVisitors,
