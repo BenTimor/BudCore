@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { InvalidEscapeCharacter, StringNotClosed } from "../errors";
 
 export class StringEndParser extends InternalInstructionParser {
     instruction: Instructions = "StringEnd";
@@ -52,7 +53,7 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
             const lineContent = lines[line - 1];
 
             if (lineContent === undefined) {
-                throw new Error("String not closed"); // TODO Proper error
+                throw new StringNotClosed(); // TODO Proper error
             }
 
             const char = lineContent[col - 1];
@@ -60,6 +61,7 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
             if (char === undefined) {
                 line++;
                 col = 1;
+                continue;
             }
 
             if (char === this.arg[0]) {
@@ -84,19 +86,25 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
                         content += "\n";
                         break;
                     default:
-                        throw new Error("Invalid escape character"); // TODO Proper error
+                        throw new InvalidEscapeCharacter(nextChar);
                 }
 
                 continue;
             }
 
-            content += char;
+            if (char === "\r") {
+                content += "\n";
+            }
+            else {
+                content += char;
+            }
+
             col++;
         }
 
         // Skipping the tokens
         for (let i = 0; i < stringCharsAmount; i++) {            
-            const arr = this.nextChildren(["StringEnd", "StringContent"], ["StringEnd"]); // TODO Add errors            
+            this.nextChildren(["StringEnd", "StringContent"], ["StringEnd"]); // TODO Add errors            
         }        
 
         return {
