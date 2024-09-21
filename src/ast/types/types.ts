@@ -40,6 +40,10 @@ export type ObjectType = {
     value: Type,
 };
 
+export type StringType = {
+    name: "string",
+}
+
 export type StructType = {
     name: "struct",
     fields: Record<string, Type>,
@@ -63,6 +67,7 @@ export type Type =
     | TupleType
     | ArrayType
     | ObjectType
+    | StringType
     | StructType
     | ReferenceType
     | TypeType

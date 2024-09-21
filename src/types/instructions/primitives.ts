@@ -1,2 +1,5 @@
 export type PrimitivesInstructions =
-    | "Number";
+    | "Number"
+    | "String"
+    | "StringEnd"
+    | "StringContent";

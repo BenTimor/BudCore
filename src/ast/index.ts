@@ -20,6 +20,14 @@ class MissingInstructions extends BudError {
 }
 
 const stringsToSpaceOut = [
+    "=:>>",
+    "=>>",
+    "=:>",
+    "=>",
+    "\\",
+    "\"",
+    "\'",
+    "\`",
     "+",
     "-",
     "*",
@@ -33,11 +41,6 @@ const stringsToSpaceOut = [
     "}",
     "[",
     "]",
-    "=>",
-    "=>>",
-    "=:>",
-    "=:>>",
-    "...",
     ":",
 ]
 
