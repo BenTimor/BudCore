@@ -96,10 +96,7 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
 
         // Skipping the tokens
         for (let i = 0; i < stringCharsAmount; i++) {            
-            const arr = this.nextChildren(["StringEnd", "StringContent"], ["StringEnd"]); // TODO Add errors
-
-            console.log(arr);
-            
+            const arr = this.nextChildren(["StringEnd", "StringContent"], ["StringEnd"]); // TODO Add errors            
         }        
 
         return {
