@@ -63,7 +63,7 @@ export function typesEqual(type1: Type, type2: Type): boolean {
     }
 
     if (type1.name === "reference" && type2.name === "reference") {
-        return type1.ref === type2.ref;
+        return type1.ref === type2.ref; // TODO Check reference's content and not only the reference id
     }
 
     if (type1.name === "type" && type2.name === "type") {

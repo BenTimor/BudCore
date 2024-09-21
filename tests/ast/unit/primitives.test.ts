@@ -20,4 +20,20 @@ describe("AST Numbers", () => {
         expect(context).toBeDefined();
         expect(context.value).toBe(1);
     });
+
+    test("Should parse strings", () => {
+        const code = `"Hello, World!"`;
+        const ast = buildAST(code);
+
+        expect(ast.length).toBe(1);
+
+        const stringNode = ast[0];
+
+        expect(stringNode.instruction).toBe("String");
+
+        const context = stringNode.context as Context["String"];
+        
+        expect(context).toBeDefined();
+        expect(context.value).toBe("Hello, World!");
+    });
 });
