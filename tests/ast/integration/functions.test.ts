@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { buildAST as _buildAST } from "../../../src/ast";
-import { Context, InternalInstructionNode } from "../../../src/ast/types";
+import { Context } from "../../../src/ast/types";
 
 const buildAST = (code: string) => _buildAST(code, "", false);
 

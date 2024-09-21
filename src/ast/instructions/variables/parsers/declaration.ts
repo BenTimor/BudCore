@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import { VariablesInstructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 import { InvalidVariableDeclaration, MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
+import { typesEqual } from "../../../utils";
+import { VoidType } from "../../../types/types";
 
 export class VariableDeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
     instruction: VariablesInstructions = "VariableDeclaration";
@@ -71,7 +73,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
                     name: name,
                     mutable,
                     type: type ? type.context.type.type : {
-                        name: "void",
+                        name: "any",
                     },
                 },
             };
@@ -110,11 +112,19 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
 
         const value = values[0];
 
-        // TODO Validate the content type
-
-        varDeclarationNode.context.type = type ? type.context.type.type : (isTyped(value) ? value.context.type : {
+        let valueType = isTyped(value) ? value.context.type : ({
             name: "void",
-        });
+        } as VoidType);
+
+        if (type) {
+            
+
+            if (!typesEqual(type.context.type.type, valueType)) {
+                throw new InvalidVariableDeclaration();
+            }
+        }
+
+        varDeclarationNode.context.type = type ? type.context.type.type : valueType;
         varDeclarationNode.context.value = value;
         varDeclarationNode.endsAt = value.endsAt;
 
