@@ -7,7 +7,10 @@ export type ExtrasInstructions =
     | "Proxy"
     | "Block"
     | "BlockEnd"
+    | "BlockStart"
     | "Array"
     | "ArrayEnd"
     | "Literal"
-    | "Type";
+    | "Type"
+    | "Return"
+    | "ReturnIdentifier";

@@ -1,8 +1,8 @@
-import { Generator } from "engine";
 import { extrasGenerators, functionGenerators, primitiveGenerators, variableGenerators } from "./instructions";
 import { readFileSync, writeFileSync } from "fs";
 import { InternalInstructionNode } from "../ast/types";
 import { conditionGenerators } from "./instructions/conditions";
+import { InternalGenerator } from "./types";
 
 // TODO Import a library and not a file
 const start = `
@@ -10,23 +10,18 @@ const { Bud } = require("bud");
 const bud = new Bud();
 `;
 
-const generator = new Generator([
+const generator = new InternalGenerator([
     ...variableGenerators,
     ...primitiveGenerators,
     ...functionGenerators,
     ...extrasGenerators,
     ...conditionGenerators,
-], {
-    generator: {
-        join: "\n, ",
-        prefix: "bud.scope(bud => [",
-        suffix: "])",
-    },
-});
+]);
 
 export async function generateFromAST(ast: InternalInstructionNode[]) {
-    const res = await generator.generate(ast);
-    return start + "\n" + res;
+    const block = await generator.generateInBlock("ROOT", ast);
+
+    return start + "\n" + block;
 }
 
 if (require.main === module) {    
@@ -36,8 +31,8 @@ if (require.main === module) {
     const content = JSON.parse(readFileSync(file).toString());
 
     if (cmd === "generate") {
-        generator.generate(content).then(res => {
-            writeFileSync("output.js", start + "\n" + res);
+        generateFromAST(content).then(res => {
+            writeFileSync("output.js", res);
             console.log("Generated output.js");
         });
     }

@@ -7,6 +7,6 @@ export class ParenthesesGenerator extends InternalInstructionGenerator {
     }
 
     async handle(node: InternalInstructionNode<Context["Parentheses"]>): Promise<string> {
-        return `(${await this.generator.generate(node.context.children)})` + (node.context.children.length === 1 ? ".at(-1)" : "");
+        return `(${await this.generateInParentheses(node.context.children)})`;
     }    
 }

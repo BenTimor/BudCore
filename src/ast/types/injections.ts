@@ -5,4 +5,5 @@ export type Injections<InternalInstructionNode> = {
     filePath: string,
     blockPrefixElements: InternalInstructionNode[],
     currStringChar?: string,
+    currentBlockIdentifier: string,
 };

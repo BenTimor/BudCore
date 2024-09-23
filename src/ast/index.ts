@@ -25,6 +25,9 @@ const stringsToSpaceOut = [
     "=>>",
     "=:>",
     "=>",
+    "->",
+    "<=",
+    ">=",
     "\\",
     "\"",
     "\'",
@@ -43,6 +46,9 @@ const stringsToSpaceOut = [
     "[",
     "]",
     ":",
+    "_",
+    ">",
+    "<",
 ]
 
 function astBuilderFactory(content: string, filePath: string) {
@@ -59,6 +65,7 @@ function astBuilderFactory(content: string, filePath: string) {
         memory: new Memory(new Globals()),
         filePath,
         blockPrefixElements: [],
+        currentBlockIdentifier: "DEFAULT",
     }, {
         spaceOut: stringsToSpaceOut,
         errors: {

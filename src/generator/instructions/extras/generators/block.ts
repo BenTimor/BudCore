@@ -7,6 +7,6 @@ export class BlockGenerator extends InternalInstructionGenerator {
     }
 
     async handle(node: InternalInstructionNode<Context["Block"]>): Promise<string> {
-        return await this.generator.generate(node.context.children);
+        return await this.generateInBlock(node.context.identifier, node.context.children);
     }
 }

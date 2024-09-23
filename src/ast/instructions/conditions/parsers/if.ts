@@ -14,7 +14,7 @@ export class IfParser extends InternalInstructionParser {
             throw new Error("If condition must be a boolean"); // TODO Proper errors
         }
 
-        const block = this.next();
+        const block = this.next();        
 
         if (!isInstruction(block, "Block")) {
             throw new Error("If block must be a block"); // TODO Proper errors

@@ -30,6 +30,7 @@ export type TypedContext = {
 };
 
 export type BlockContext = {
+    identifier: string;
     children: InternalInstructionNode<any>[];
 };
 
@@ -58,7 +59,7 @@ export type Context = {
         precedence: number;
         function: string;
     } & TypedContext,
-    Block: BlockContext,
+    Block: BlockContext & TypedContext,
     Proxy: {
         identifier: string;
         block: InternalInstructionNode<any>;
@@ -103,7 +104,14 @@ export type Context = {
     If: {
         condition: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
         block: InternalInstructionNode<BlockContext>;
-    }
+    },
+    Return: {
+        value: InternalInstructionNode<any>;
+        identifier: string;
+    } & TypedContext,
+    ReturnIdentifier: {
+        identifier: string;
+    },
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

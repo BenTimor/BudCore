@@ -1,10 +1,12 @@
 import { NativeOperatorsMap } from "../../types/operators";
+import { booleanOperators } from "./boolean";
 import { numberOperators } from "./number";
 
 export const nativeOperators: NativeOperatorsMap = {};
 
 const importedOperators = [
     numberOperators,
+    booleanOperators,
 ];
 
 for (const operators of importedOperators) {

@@ -7,7 +7,7 @@ export class OperatorsGenerator extends InternalInstructionGenerator {
         return node.instruction === "Operator";
     }
 
-    async handle(node: InternalInstructionNode<Context["Operator"]>): Promise<string> {
+    async handle(node: InternalInstructionNode<Context["Operator"]>): Promise<string | null> {
         const leftNode = node.context.left;
         const rightNode = node.context.right;
 

@@ -3,6 +3,7 @@ import { BlockGenerator } from "./block";
 import { LiteralGenerator } from "./literal";
 import { OperatorsGenerator } from "./operators";
 import { ParenthesesGenerator } from "./parentheses";
+import { ReturnGenerator } from "./return";
 import { SemicolonGenerator } from "./semicolon";
 import { TypeGenerator } from "./types";
 
@@ -14,4 +15,5 @@ export const extrasGenerators = [
     BlockGenerator,
     LiteralGenerator,
     TypeGenerator,
+    ReturnGenerator,
 ];

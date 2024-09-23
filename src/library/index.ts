@@ -5,6 +5,7 @@ export interface VariableProxy {
 
 class Variables {
     private variables: Map<string, VariableProxy> = new Map([
+        // TODO Move these to a separate file
         ["NativeLog", new class implements VariableProxy {
             get() {
                 return (args: any) => console.log(...args.values);
@@ -60,10 +61,42 @@ class Variables {
             set() {
                 throw new Error("Cannot set native variable");
             }
+        }],
+        ["NativeNumberGreaterThan", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left > args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberLessThan", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left < args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberGreaterThanOrEqual", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left >= args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }],
+        ["NativeNumberLessThanOrEqual", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left <= args.right;
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
         }]
     ]);
 
-    constructor(private parent?: Variables) {}
+    constructor(private parent?: Variables) { }
 
     get(key: string): any {
         return this.variables.get(key)?.get() ?? this.parent?.get(key);
@@ -73,7 +106,7 @@ class Variables {
         if (this.variables.has(key)) {
             return this.variables.get(key)?.set(value);
         }
-        
+
         if (this.parent?.get(key) !== undefined && !forceCurrent) {
             return this.parent.set(key, value, false);
         }
@@ -95,13 +128,51 @@ class Variables {
 
 export class Bud {
     public variables: Variables;
+    public returnValue: any = undefined;
+    public returnScope: string | undefined = undefined;
 
-    constructor(parent?: Bud) {
+    constructor(parent?: Bud, private scopes: Set<string> = new Set()) {
         this.variables = new Variables(parent?.variables);
     }
 
-    scope(callback: (bud: Bud) => any[]) {
-        return callback(new Bud(this));
+    parentheses(callback: (bud: Bud) => Function[]) {
+        const funcs = callback(new Bud(this, this.scopes));
+
+        const resp = funcs.map((f) => f());
+
+        if (resp.length === 1) {
+            return resp[0];
+        }
+
+        return resp;
+    }
+
+    return(id: string, value: any) {
+        this.returnValue = value;
+        this.returnScope = id;
+    }
+
+    block(id: string, callback: (bud: Bud) => Function[]) {
+        this.scopes.add(id);
+        const bud = new Bud(this, this.scopes);
+        const funcs = callback(bud);
+
+        for (const func of funcs) {
+            func();
+
+            if (bud.returnScope !== undefined) {
+                if (bud.returnScope === id) {
+                    return bud.returnValue;
+                }
+                else {
+                    this.returnValue = bud.returnValue;
+                    this.returnScope = bud.returnScope;
+                    return undefined;
+                }
+            }
+        }
+
+        return undefined;
     }
 }
 

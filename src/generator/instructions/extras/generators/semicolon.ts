@@ -6,6 +6,6 @@ export class SemicolonGenerator extends InternalInstructionGenerator {
     }
 
     async handle(node: any) {
-        return "";
+        return null;
     }
 }

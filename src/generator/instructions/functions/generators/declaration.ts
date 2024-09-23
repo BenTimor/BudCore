@@ -9,6 +9,6 @@ export class FunctionDeclarationGenerator extends InternalInstructionGenerator {
     async handle(node: InternalInstructionNode<Context["FunctionDeclaration"]>): Promise<string> {
         const params = "{ " + node.context.type.parameters.map(param => param.name).join(", ") + " }";
 
-        return `(${params}) => { ${await this.generator.generateOne(node.context.block)} }`
+        return `(${params}) => { return ${await this.generator.generateOne(node.context.block)} }`
     }
 }

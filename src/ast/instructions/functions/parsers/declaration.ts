@@ -123,7 +123,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                     name: "function",
                     parameters,
                     spread,
-                    returnType: { name: "void" }, // TODO Implement types
+                    returnType: { name: "any" },
                 },
                 defaults,
                 block: {} as any, // TODO Rethink what should be here
@@ -141,6 +141,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
 
         functionNode.context.block = block;
         functionNode.endsAt = this.nextIndex;
+        functionNode.context.type.returnType = block.context.type;
 
         return null;
     }
