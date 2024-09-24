@@ -70,7 +70,7 @@ export class BlockParser extends InternalInstructionParser<Context["Block"]> {
         children.pop(); // Remove the BlockEnd
 
         let type: Type = {
-            name: "void",
+            name: "any",
         }
 
         try {
