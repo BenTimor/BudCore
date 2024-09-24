@@ -96,7 +96,16 @@ class Variables {
         }]
     ]);
 
-    constructor(private parent?: Variables) { }
+    constructor(bud: Bud, private parent?: Variables) {
+        this.variables.set("NativeBlockRan", new class implements VariableProxy {
+            get() {
+                return (args: any) => bud.ran(args.id);
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        })
+    }
 
     get(key: string): any {
         return this.variables.get(key)?.get() ?? this.parent?.get(key);
@@ -132,7 +141,7 @@ export class Bud {
     public returnScope: string | undefined = undefined;
 
     constructor(parent?: Bud, private scopes: Set<string> = new Set()) {
-        this.variables = new Variables(parent?.variables);
+        this.variables = new Variables(this, parent?.variables);
     }
 
     parentheses(callback: (bud: Bud) => Function[]) {
@@ -152,8 +161,12 @@ export class Bud {
         this.returnScope = id;
     }
 
+    ran(id: string) {
+        return this.scopes.has(id);
+    }
+
     block(id: string, callback: (bud: Bud) => Function[]) {
-        this.scopes.add(id);
+        this.scopes = new Set(this.scopes).add(id);
         const bud = new Bud(this, this.scopes);
         const funcs = callback(bud);
 

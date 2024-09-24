@@ -42,6 +42,7 @@ export class Memory implements IMemory {
 export class Globals implements IMemory {
     private static memory: MemoryStorage = {
         "VAR_log": "VAR_DECLARATION_NATIVE_LOG",
+        "VAR_ran": "VAR_DECLARATION_NATIVE_RAN",
         "VAR_number": "VAR_DECLARATION_NUMBER_TYPE",
         "VAR_true": "VAR_DECLARATION_TRUE",
         "VAR_false": "VAR_DECLARATION_FALSE",
