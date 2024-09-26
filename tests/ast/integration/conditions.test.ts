@@ -44,4 +44,25 @@ describe("Conditions", () => {
         expect(context.condition.instruction).toBe("Parentheses");
         expect(context.block).toBeDefined();
     });
+
+    test("Should parse the not operator", () => {
+        const code = `
+            if !true {
+                set a = 1;
+            }
+        `;
+
+        const ast = buildAST(code);
+
+        const ifNode = ast.at(-1);
+
+        expect(ifNode).toBeDefined();
+        expect(ifNode!.instruction).toBe("If");
+
+        const context = ifNode!.context as Context["If"];
+
+        expect(context).toBeDefined();
+        expect(context.condition.instruction).toBe("Not");
+        expect(context.block).toBeDefined();
+    });
 })
