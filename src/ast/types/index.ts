@@ -104,6 +104,7 @@ export type Context = {
     If: {
         condition: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
         block: InternalInstructionNode<BlockContext>;
+        else?: InternalInstructionNode<BlockContext>;
     },
     Return: {
         value: InternalInstructionNode<any>;

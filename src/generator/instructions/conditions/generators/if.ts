@@ -9,8 +9,13 @@ export class IfGenerator extends InternalInstructionGenerator {
     async handle(node: InternalInstructionNode<Context["If"]>): Promise<string> {
         const condition = await this.generator.generateOne(node.context.condition);
         const block = await this.generator.generateOne(node.context.block);
+        let generatedElse = "";
 
-        return `(() => { if (${condition}) { ${block} } })()`;
+        if (node.context.else) {
+            generatedElse = `else { ${await this.generator.generateOne(node.context.else)} }`;
+        }
+
+        return `(() => { if (${condition}) { ${block} } ${generatedElse} })()`;
     }
     
 }
