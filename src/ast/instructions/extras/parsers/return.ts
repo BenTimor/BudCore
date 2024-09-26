@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
-import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { InvalidBlockIdentifier, TooManyChildren } from "../errors/return";
 
 export class ReturnIdentifierParser extends InternalInstructionParser {
     instruction: Instructions = "ReturnIdentifier";
@@ -13,7 +14,7 @@ export class ReturnIdentifierParser extends InternalInstructionParser {
         const identifier = this.next(["VariableName"]);
 
         if (!isInstruction(identifier, "VariableName")) {
-            throw new Error("Expected VariableName"); // TODO Proper error
+            throw new InvalidBlockIdentifier();
         }
 
         return {
@@ -38,7 +39,7 @@ export class ReturnParser extends InternalInstructionParser {
         const last = children.pop(); 
 
         if (children.length !== 1) {
-            throw new Error("Return statement must have exactly one child"); // TODO proper error
+            throw new TooManyChildren();
         }
 
         let identifier = this.injection.currentBlockIdentifier;
@@ -47,10 +48,25 @@ export class ReturnParser extends InternalInstructionParser {
             identifier = last.context.identifier;
         }
 
-        const value = children[0];
+        let value = children[0];
 
         if (!isTyped(value)) {
-            throw new Error("Return value must have a type"); // TODO proper error
+            const literalUndefined: InternalInstructionNode<Context["Literal"] & { type: { name: "void" } }> = {
+                instruction: "Literal",
+                endsAt: -1,
+                context: {
+                    value: "undefined",
+                    type: {
+                        name: "void",
+                    },
+                },
+            };
+
+            value = literalUndefined;
+        }
+
+        if (!isTyped(value)) {
+            throw new CompilerError("Return value is not typed"); // This is literally to satisfy TypeScript
         }
 
         return {

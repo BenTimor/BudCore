@@ -1,7 +1,7 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
 import { Type } from "../../../types/types";
-import { MissingBlockEnd } from "../errors";
+import { InvalidIdentifier, MissingBlockAfterIdentifier, MissingBlockEnd } from "../errors";
 
 export class BlockStartParser extends InternalInstructionParser {
     instruction: Instructions = "BlockStart";
@@ -47,13 +47,13 @@ export class BlockParser extends InternalInstructionParser<Context["Block"]> {
             const varName = this.next(["VariableName"]);
 
             if (!isInstruction(varName, "VariableName")) {
-                throw new Error("Expected VariableName"); // TODO Proper error
+                throw new InvalidIdentifier();
             }
 
             identifier = varName.context.name;
 
             if (!isInstruction(this.next(["BlockStart"]), "BlockStart")) {
-                throw new Error("Expected BlockStart"); // TODO Proper error
+                throw new MissingBlockAfterIdentifier();
             }
         }
 

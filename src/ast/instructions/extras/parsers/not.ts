@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { InvalidNotValue } from "../errors";
 
 export class NotParser extends InternalInstructionParser {
     instruction: Instructions = "Not";
@@ -11,12 +12,8 @@ export class NotParser extends InternalInstructionParser {
     handle(): ReturnedInternalInstructionNode<Context["Not"]> {
         const node = this.next();
 
-        if (!node) {
-            throw new Error("MissingRightValue"); // TODO Proper error
-        }
-
-        if (!isTyped(node)) {
-            throw new Error("InvalidRightValue"); // TODO Proper error
+        if (!node || !isTyped(node)) {
+            throw new InvalidNotValue();
         }
 
         if (node.context.type.name !== "boolean") {

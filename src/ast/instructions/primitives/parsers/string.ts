@@ -53,7 +53,7 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
             const lineContent = lines[line - 1];
 
             if (lineContent === undefined) {
-                throw new StringNotClosed(); // TODO Proper error
+                throw new StringNotClosed();
             }
 
             const char = lineContent[col - 1];
