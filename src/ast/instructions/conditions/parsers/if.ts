@@ -10,13 +10,13 @@ export class IfParser extends InternalInstructionParser {
     handle(): ReturnedInternalInstructionNode<Context["If"]> {
         const condition = this.next();
 
-        if (!isTyped(condition) || condition.context.type.name !== "boolean") {
+        if (!isTyped(condition) || condition.context.type.name !== "boolean") {            
             throw new Error("If condition must be a boolean"); // TODO Proper errors
         }
 
         const block = this.next();        
 
-        if (!isInstruction(block, "Block")) {
+        if (!isInstruction(block, "Block")) {       
             throw new Error("If block must be a block"); // TODO Proper errors
         }
 

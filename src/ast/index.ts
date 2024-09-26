@@ -49,6 +49,7 @@ const stringsToSpaceOut = [
     "_",
     ">",
     "<",
+    "!",
 ]
 
 function astBuilderFactory(content: string, filePath: string) {

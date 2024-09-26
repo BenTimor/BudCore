@@ -1,6 +1,7 @@
 import { ArrayGenerator } from "./array";
 import { BlockGenerator } from "./block";
 import { LiteralGenerator } from "./literal";
+import { NotGenerator } from "./not";
 import { OperatorsGenerator } from "./operators";
 import { ParenthesesGenerator } from "./parentheses";
 import { ReturnGenerator } from "./return";
@@ -16,4 +17,5 @@ export const extrasGenerators = [
     LiteralGenerator,
     TypeGenerator,
     ReturnGenerator,
+    NotGenerator,
 ];

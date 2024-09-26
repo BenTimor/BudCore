@@ -13,4 +13,5 @@ export type ExtrasInstructions =
     | "Literal"
     | "Type"
     | "Return"
-    | "ReturnIdentifier";
+    | "ReturnIdentifier"
+    | "Not";

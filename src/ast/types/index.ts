@@ -112,6 +112,9 @@ export type Context = {
     ReturnIdentifier: {
         identifier: string;
     },
+    Not: {
+        value: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
+    } & TypedContext,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {
