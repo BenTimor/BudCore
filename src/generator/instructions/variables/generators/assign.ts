@@ -1,14 +1,14 @@
 import { Context, InternalInstructionNode } from "../../../../ast/types";
 import { InternalInstructionGenerator } from "../../../types";
 
-export class VariableDeclarationGenerator extends InternalInstructionGenerator {
+export class VariableAssignGenerator extends InternalInstructionGenerator {
     async check(node: InternalInstructionNode) {
-        return node.instruction === "VariableDeclaration";
+        return node.instruction === "VariableAssignment";
     }
 
-    async handle(node: InternalInstructionNode<Context["VariableDeclaration"]>) {
+    async handle(node: InternalInstructionNode<Context["VariableAssignment"]>) {
         const valueNode = node.context.value;
         const value = valueNode ? await this.generator.generateOne(valueNode) : undefined;
-        return `bud.variables.set("${node.identifier}", ${value}, true)`;
+        return `bud.variables.set("${node.context.identifier}", ${value})`;
     }
 }
