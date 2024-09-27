@@ -60,6 +60,7 @@ export class BlockParser extends InternalInstructionParser<Context["Block"]> {
         this.injection = {
             ...this.injection,
             currentBlockIdentifier: identifier,
+            memory: this.injection.memory.scope(),
         }
 
         const children = this.nextChildren(undefined, ["BlockEnd"], {
