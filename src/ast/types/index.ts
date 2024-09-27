@@ -106,6 +106,9 @@ export type Context = {
         block: InternalInstructionNode<BlockContext>;
         else?: InternalInstructionNode<BlockContext>;
     },
+    Else: {
+        block: InternalInstructionNode<BlockContext>;
+    },
     Return: {
         value: InternalInstructionNode<any>;
         identifier: string;
