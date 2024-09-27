@@ -12,10 +12,10 @@ export class IfGenerator extends InternalInstructionGenerator {
         let generatedElse = "";
 
         if (node.context.else) {
-            generatedElse = `else { ${await this.generator.generateOne(node.context.else)} }`;
+            generatedElse = (await this.generator.generateOne(node.context.else)) || "";
         }
 
-        return `(() => { if (${condition}) { ${block} } ${generatedElse} })()`;
+        return `bud.if(${condition}, () => ${block}, () => ${generatedElse})`;
     }
     
 }

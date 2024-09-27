@@ -1,6 +1,7 @@
 import { Instructions } from "../../../../types";
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { ConditionMustBeBoolean, ExpectedBlockAfterIf } from "../errors";
+import { typesEqual } from "../../../utils";
+import { ConditionMustBeBoolean, ExpectedBlockAfterIf, MismatchIfElseType } from "../errors";
 
 export class IfParser extends InternalInstructionParser {
     instruction: Instructions = "If";
@@ -29,12 +30,17 @@ export class IfParser extends InternalInstructionParser {
 
         const elseContext = elseNode ? elseNode.context as Context["Else"] : undefined;
 
+        if (elseContext && !typesEqual(block.context.type, elseContext?.type)) {
+            throw new MismatchIfElseType();
+        }
+
         return {
             instruction: "If",
             context: {
                 condition: condition as any, // TODO Think of a better way to handle this
                 block,
                 else: elseContext?.block,
+                type: block.context.type,
             }
         }
     }

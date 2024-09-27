@@ -187,5 +187,14 @@ export class Bud {
 
         return undefined;
     }
+
+    if(condition: boolean, isTrue: Function, isFalse: Function) {
+        if (condition) {
+            return isTrue();
+        }
+        else {
+            return isFalse();
+        }
+    }
 }
 

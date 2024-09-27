@@ -11,3 +11,9 @@ export class ExpectedBlockAfterIf extends BudError {
         super("ExpectedBlockAfterIf", "Expected a block after the if condition");
     }
 }
+
+export class MismatchIfElseType extends BudError {
+    constructor() {
+        super("MismatchIfElseType", "If and else block types must match");
+    }
+}

@@ -12,13 +12,21 @@ export class ElseParser extends InternalInstructionParser {
         let block = this.next(["Block", "If"]);
 
         if (isInstruction(block, "If")) {
+            const returnWithIf: InternalInstructionNode<Context["Return"]> = {
+                instruction: "Return",
+                context: {
+                    value: block,
+                    identifier: "DEFAULT", // TODO DRY
+                    type: block.context.type,
+                },
+                endsAt: block.endsAt,
+            }
+
             const blockWithIf: InternalInstructionNode<Context["Block"]> = {  // TODO We'll need DRY here when we have loops. Maybe somehow "Blockify" things
                 instruction: "Block",
                 context: {
-                    children: [block],
-                    type: {
-                        name: "void" // TODO Fix if types
-                    },
+                    children: [returnWithIf],
+                    type: block.context.type,
                     identifier: "DEFAULT", // TODO DRY
                 },
                 endsAt: block.endsAt,
@@ -36,6 +44,7 @@ export class ElseParser extends InternalInstructionParser {
             instruction: "Else",
             context: {
                 block,
+                type: block.context.type,
             }
         }
     }
