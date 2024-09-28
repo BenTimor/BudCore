@@ -1,30 +1,6 @@
 import { Instructions } from "../../../../types";
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { InvalidBlockIdentifier, TooManyChildren } from "../errors";
-
-export class ReturnIdentifierParser extends InternalInstructionParser {
-    instruction: Instructions = "ReturnIdentifier";
-    limited: boolean = true;
-
-    check(): boolean {
-        return this.arg === "->";
-    }
-
-    handle(): ReturnedInternalInstructionNode<Context["ReturnIdentifier"]> {
-        const identifier = this.next(["VariableName"]);
-
-        if (!isInstruction(identifier, "VariableName")) {
-            throw new InvalidBlockIdentifier();
-        }
-
-        return {
-            instruction: "ReturnIdentifier",
-            context: {
-                identifier: identifier.context.name,
-            }
-        };
-    }
-}
+import { TooManyChildren } from "../errors";
 
 export class ReturnParser extends InternalInstructionParser {
     instruction: Instructions = "Return";
@@ -34,7 +10,7 @@ export class ReturnParser extends InternalInstructionParser {
     }
 
     handle(): ReturnedInternalInstructionNode<Context["Return"]> {
-        const children = this.nextChildren(undefined, ["Semicolon", "ReturnIdentifier"]);
+        const children = this.nextChildren(undefined, ["Semicolon", "BlockSpecification"]);
 
         const last = children.pop(); 
 
@@ -44,7 +20,7 @@ export class ReturnParser extends InternalInstructionParser {
 
         let identifier = this.injection.currentBlockIdentifier;
 
-        if (isInstruction(last, "ReturnIdentifier")) {
+        if (isInstruction(last, "BlockSpecification")) {
             identifier = last.context.identifier;
         }
 

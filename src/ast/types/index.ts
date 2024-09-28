@@ -113,7 +113,10 @@ export type Context = {
         value: InternalInstructionNode<any>;
         identifier: string;
     } & TypedContext,
-    ReturnIdentifier: {
+    Continue: {
+        identifier: string;
+    },
+    BlockSpecification: {
         identifier: string;
     },
     Not: {

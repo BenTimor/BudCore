@@ -1,7 +1,6 @@
-import { extrasGenerators, functionGenerators, primitiveGenerators, variableGenerators } from "./instructions";
+import { extrasGenerators, blockedGenerators, primitiveGenerators, variableGenerators } from "./instructions";
 import { readFileSync, writeFileSync } from "fs";
 import { InternalInstructionNode } from "../ast/types";
-import { conditionGenerators } from "./instructions/conditions";
 import { InternalGenerator } from "./types";
 
 // TODO Import a library and not a file
@@ -13,9 +12,8 @@ const bud = new Bud();
 const generator = new InternalGenerator([
     ...variableGenerators,
     ...primitiveGenerators,
-    ...functionGenerators,
+    ...blockedGenerators,
     ...extrasGenerators,
-    ...conditionGenerators,
 ]);
 
 export async function generateFromAST(ast: InternalInstructionNode[]) {

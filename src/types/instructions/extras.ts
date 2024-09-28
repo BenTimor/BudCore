@@ -5,13 +5,8 @@ export type ExtrasInstructions =
     | "Parentheses"
     | "ParenthesesEnd"
     | "Proxy"
-    | "Block"
-    | "BlockEnd"
-    | "BlockStart"
     | "Array"
     | "ArrayEnd"
     | "Literal"
     | "Type"
-    | "Return"
-    | "ReturnIdentifier"
     | "Not";

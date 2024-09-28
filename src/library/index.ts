@@ -139,6 +139,7 @@ export class Bud {
     public variables: Variables;
     public returnValue: any = undefined;
     public returnScope: string | undefined = undefined;
+    public continueScope: string | undefined = undefined;
 
     constructor(parent?: Bud, private scopes: Set<string> = new Set()) {
         this.variables = new Variables(this, parent?.variables);
@@ -161,26 +162,47 @@ export class Bud {
         this.returnScope = id;
     }
 
+    continue(id: string) {
+        this.continueScope = id;
+    }
+
     ran(id: string) {
         return this.scopes.has(id);
     }
 
     block(id: string, callback: (bud: Bud) => Function[]) {
         this.scopes = new Set(this.scopes).add(id);
-        const bud = new Bud(this, this.scopes);
-        const funcs = callback(bud);
+        let executeBlock = true;
 
-        for (const func of funcs) {
-            func();
+        while (executeBlock) {
+            executeBlock = false;
 
-            if (bud.returnScope !== undefined) {
-                if (bud.returnScope === id) {
-                    return bud.returnValue;
+            const bud = new Bud(this, this.scopes);
+            const funcs = callback(bud);
+
+            for (const func of funcs) {
+                func();
+
+                if (bud.returnScope !== undefined) {
+                    if (bud.returnScope === id) {
+                        return bud.returnValue;
+                    }
+                    else {
+                        this.returnValue = bud.returnValue;
+                        this.returnScope = bud.returnScope;
+                        return undefined;
+                    }
                 }
-                else {
-                    this.returnValue = bud.returnValue;
-                    this.returnScope = bud.returnScope;
-                    return undefined;
+
+                if (bud.continueScope !== undefined) {
+                    if (bud.continueScope === id) {
+                        executeBlock = true;
+                        break;
+                    }
+                    else {
+                        this.continueScope = bud.continueScope;
+                        return undefined;
+                    }
                 }
             }
         }
