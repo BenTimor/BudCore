@@ -1,6 +1,6 @@
 import { Instructions } from "../../../../types";
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { InvalidBlockIdentifier, TooManyChildren } from "../errors/return";
+import { InvalidBlockIdentifier, TooManyChildren } from "../errors";
 
 export class ReturnIdentifierParser extends InternalInstructionParser {
     instruction: Instructions = "ReturnIdentifier";

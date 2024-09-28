@@ -1,5 +1,5 @@
 import { FunctionCallVisitor } from "./call";
 
-export const functionVisitors = [
+export const blockedVisitors = [
     FunctionCallVisitor,
 ]

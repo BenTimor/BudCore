@@ -1,12 +1,11 @@
 import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions, variableVisitors } from "./instructions/variables";
-import { BudError, Context, Injections, InternalASTBuilder, InternalInstructionNode } from "./types";
+import { BudError, Injections, InternalASTBuilder, InternalInstructionNode } from "./types";
 import { Globals, Memory } from "./memory";
 import { extrasInstructions } from "./instructions/extras";
-import { functionsInstructions, functionVisitors } from "./instructions/functions";
 import { Instructions } from "../types";
 import { nativeNodes } from "./native";
-import { conditionInstructions } from "./instructions/conditions";
+import { blockedInstructions, blockedVisitors } from "./instructions/blocked";
 
 class InstructionNotFound extends BudError {
     constructor(instruction: string, filePath: string, cords: number[]) {
@@ -56,11 +55,10 @@ function astBuilderFactory(content: string, filePath: string) {
     return new InternalASTBuilder(content, [
         ...variablesInstructions,
         ...primitivesInstructions,
-        ...functionsInstructions,
+        ...blockedInstructions,
         ...extrasInstructions,
-        ...conditionInstructions,
     ], [
-        ...functionVisitors,
+        ...blockedVisitors,
         ...variableVisitors,
     ], {
         memory: new Memory(new Globals()),
