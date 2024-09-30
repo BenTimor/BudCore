@@ -93,7 +93,16 @@ class Variables {
             set() {
                 throw new Error("Cannot set native variable");
             }
-        }]
+        }],
+        ["NativeEqual", new class implements VariableProxy {
+            get() {
+                return (args: any) => args.left === args.right; // TODO Change it to internal mechanism that validates more things like types
+            }
+            set() {
+                throw new Error("Cannot set native variable");
+            }
+        }
+        ]
     ]);
 
     constructor(bud: Bud, private parent?: Variables) {
@@ -141,12 +150,12 @@ export class Bud {
     public returnScope: string | undefined = undefined;
     public continueScope: string | undefined = undefined;
 
-    constructor(parent?: Bud, private scopes: Set<string> = new Set()) {
+    constructor(parent?: Bud, private scopes: Set<string> = new Set(), public exports: Record<string, any> = {}) {
         this.variables = new Variables(this, parent?.variables);
     }
 
     parentheses(callback: (bud: Bud) => Function[]) {
-        const funcs = callback(new Bud(this, this.scopes));
+        const funcs = callback(new Bud(this, this.scopes, this.exports));
 
         const resp = funcs.map((f) => f());
 
@@ -177,7 +186,7 @@ export class Bud {
         while (executeBlock) {
             executeBlock = false;
 
-            const bud = new Bud(this, this.scopes);
+            const bud = new Bud(this, this.scopes, this.exports);
             const funcs = callback(bud);
 
             for (const func of funcs) {

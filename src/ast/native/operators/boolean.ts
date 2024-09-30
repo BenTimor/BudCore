@@ -53,4 +53,17 @@ export const booleanOperators: NativeOperatorsMap = {
         },
         functionIdentifier: "NativeNumberLessThanOrEqual",
     }],
+    "==": [{
+        precedence: 0,
+        leftType: {
+            name: "any",
+        },
+        rightType: {
+            name: "any",
+        },
+        returnType: {
+            name: "boolean",
+        },
+        functionIdentifier: "NativeEqual",
+    }],
 };

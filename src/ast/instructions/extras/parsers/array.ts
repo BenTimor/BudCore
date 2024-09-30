@@ -28,7 +28,7 @@ export class ArrayParser extends InternalInstructionParser<Context["Array"]> {
     handle(): ReturnedInternalInstructionNode<Context["Array"]> {
         this.injection = {
             ...this.injection,
-            memory: new Memory(this.injection.memory),
+            memory: this.injection.memory.scope(),
         }
 
         const children = this.nextChildren(undefined, ["ArrayEnd"]).filter(child => child.instruction !== "Semicolon");
