@@ -122,6 +122,10 @@ export type Context = {
     Not: {
         value: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
     } & TypedContext,
+    ArrayIndexing: {
+        array: InternalInstructionNode<TypedContext & { type: { name: "array" } }>; // TODO DRY Types
+        index: InternalInstructionNode<TypedContext & { type: { name: "number" } }>;
+    } & TypedContext,
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

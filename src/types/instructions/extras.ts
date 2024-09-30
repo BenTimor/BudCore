@@ -7,6 +7,7 @@ export type ExtrasInstructions =
     | "Proxy"
     | "Array"
     | "ArrayEnd"
+    | "ArrayIndexing"
     | "Literal"
     | "Type"
     | "Not";

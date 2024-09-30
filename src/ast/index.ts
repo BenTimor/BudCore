@@ -2,7 +2,7 @@ import { primitivesInstructions } from "./instructions/primitives";
 import { variablesInstructions, variableVisitors } from "./instructions/variables";
 import { BudError, Injections, InternalASTBuilder, InternalInstructionNode } from "./types";
 import { Globals, Memory } from "./memory";
-import { extrasInstructions } from "./instructions/extras";
+import { extrasInstructions, extrasVisitors } from "./instructions/extras";
 import { Instructions } from "../types";
 import { nativeNodes } from "./native";
 import { blockedInstructions, blockedVisitors } from "./instructions/blocked";
@@ -60,6 +60,7 @@ function astBuilderFactory(content: string, filePath: string) {
     ], [
         ...blockedVisitors,
         ...variableVisitors,
+        ...extrasVisitors,
     ], {
         memory: new Memory(new Globals()),
         filePath,
