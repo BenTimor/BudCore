@@ -227,5 +227,9 @@ export class Bud {
             return isFalse();
         }
     }
+
+    export(name: string, value: any) {
+        this.exports[name] = value;
+    }
 }
 

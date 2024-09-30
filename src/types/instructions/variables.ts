@@ -3,4 +3,5 @@ export type VariablesInstructions =
     | "VariableDeclaration"
     | "VariableAssignment"
     | "VariableRead"
-    | "VariableMutable"; 
+    | "VariableMutable"
+    | "Export"; 

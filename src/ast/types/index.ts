@@ -126,6 +126,10 @@ export type Context = {
         array: InternalInstructionNode<TypedContext & { type: { name: "array" } }>; // TODO DRY Types
         index: InternalInstructionNode<TypedContext & { type: { name: "number" } }>;
     } & TypedContext,
+    Export: {
+        name: string;
+        value: InternalInstructionNode<any>;
+    },
 }
 
 export function isInstruction<Instruction extends Instructions>(node: any, instruction: Instruction): node is InternalInstructionNode<Instruction extends keyof Context ? Context[Instruction] : undefined> {

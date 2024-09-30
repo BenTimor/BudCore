@@ -9,6 +9,12 @@ const { Bud } = require("bud");
 const bud = new Bud();
 `;
 
+const end = `
+;
+
+exports.default = bud.exports;
+`
+
 const generator = new InternalGenerator([
     ...variableGenerators,
     ...primitiveGenerators,
@@ -19,7 +25,7 @@ const generator = new InternalGenerator([
 export async function generateFromAST(ast: InternalInstructionNode[]) {
     const block = await generator.generateInBlock("ROOT", ast);
 
-    return start + "\n" + block;
+    return start + "\n" + block + "\n" + end;
 }
 
 if (require.main === module) {    
