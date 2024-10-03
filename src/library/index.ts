@@ -219,12 +219,12 @@ export class Bud {
         return undefined;
     }
 
-    if(condition: boolean, isTrue: Function, isFalse: Function) {
+    if(condition: boolean, ifDo: Function, elseDo: Function) {
         if (condition) {
-            return isTrue();
+            return ifDo();
         }
         else {
-            return isFalse();
+            return elseDo();
         }
     }
 
