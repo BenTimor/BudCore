@@ -1,6 +1,7 @@
 import { Instructions } from "../../../../types";
 import { Memory } from "../../../memory";
 import { Context, InternalInstructionParser, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { TupleType, VoidType } from "../../../types/types";
 
 export class ParenthesesEndParser extends InternalInstructionParser {
     limited: boolean = true;
@@ -29,7 +30,7 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
             ...this.injection,
             memory: new Memory(this.injection.memory),
         }
-        
+
         const children = this.nextChildren(undefined, ["ParenthesesEnd"]);
 
         children.pop(); // Remove the last element, which is the closing parenthesis
@@ -38,9 +39,7 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
             return {
                 instruction: "Parentheses",
                 context: {
-                    type: {
-                        name: "void",
-                    },
+                    type: new VoidType(),
                     children: [],
                 },
             }
@@ -50,14 +49,10 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
             return {
                 instruction: "Parentheses",
                 context: {
-                    type: {
-                        name: "tuple",
-                        elements: children.map((child) => {
-                            return isTyped(child) ? child.context.type : {
-                                name: "void",
-                            };
-                        }),
-                    },
+                    type: new TupleType(children.map((child) => {
+                        return isTyped(child) ? child.context.type : new VoidType();
+                    }
+                    )),
                     children,
                 },
             }
@@ -68,9 +63,7 @@ export class ParenthesesParser extends InternalInstructionParser<Context["Parent
         return {
             instruction: "Parentheses",
             context: {
-                type: isTyped(child) ? child.context.type : {
-                    name: "void",
-                },
+                type: isTyped(child) ? child.context.type : new VoidType(),
                 children,
             },
         };

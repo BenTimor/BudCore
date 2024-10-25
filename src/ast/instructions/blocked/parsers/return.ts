@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { VoidType } from "../../../types/types";
 import { TooManyChildren } from "../errors";
 
 export class ReturnParser extends InternalInstructionParser {
@@ -32,9 +33,7 @@ export class ReturnParser extends InternalInstructionParser {
                 endsAt: -1,
                 context: {
                     value: "undefined",
-                    type: {
-                        name: "void",
-                    },
+                    type: new VoidType(),
                 },
             };
 

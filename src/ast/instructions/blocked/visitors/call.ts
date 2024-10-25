@@ -1,4 +1,5 @@
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction, isTyped } from "../../../types";
+import { ArrayType, FunctionSpread, FunctionType } from "../../../types/types";
 import { InvalidFunctionParameter, MissingFunctionParameterValue } from "../errors";
 
 export class FunctionCallVisitor extends InternalInstructionVisitor {
@@ -14,6 +15,8 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
             throw new CompilerError("There was an error parsing the function call. Could not find the variable read or parentheses while handling the function call");
         }
 
+        const functionNodeType = functionNode.context.type as FunctionType;
+        
         let args: Record<string, InternalInstructionNode<any> | InternalInstructionNode<any>[]> = {};
 
         let hasNamedArg = false;
@@ -30,19 +33,19 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                     throw new MissingFunctionParameterValue();
                 }
 
-                if (functionNode.context.type.parameters.find(param => param.name === child.context.name)) {
+                if (functionNodeType.parameters.find(param => param.paramName === child.context.name)) {
                     args[child.context.name] = child.context.value;
                     continue;
                 }
 
-                if (functionNode.context.type.spread === "AllSpread" || functionNode.context.type.spread === "ObjectSpread") {
-                    const objParam = functionNode.context.type.parameters.at(-1);
+                if (functionNodeType.spread === FunctionSpread.AllSpread || functionNodeType.spread === FunctionSpread.ObjectSpread) {
+                    const objParam = functionNodeType.parameters.at(-1);
 
                     if (!objParam) {
                         throw new InvalidFunctionParameter();
                     }
 
-                    const objParamName = objParam.name;
+                    const objParamName = objParam.paramName;
 
                     if (!args[objParamName]) {
                         const argDeclaration: InternalInstructionNode<Context["VariableDeclaration"]> = {
@@ -65,16 +68,16 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                 throw new InvalidFunctionParameter();
             }
             else {
-                const lengthOffset = functionNode.context.type.spread === "AllSpread" ? 2 : (functionNode.context.type.spread === "ArraySpread" ? 1 : 0);
+                const lengthOffset = functionNodeType.spread === FunctionSpread.AllSpread ? 2 : (functionNodeType.spread === FunctionSpread.ArraySpread ? 1 : 0);
 
-                if (hasNamedArg || childIndex >= functionNode.context.type.parameters.length - lengthOffset) {
+                if (hasNamedArg || childIndex >= functionNodeType.parameters.length - lengthOffset) {
                     let arrParam;
 
-                    if (functionNode.context.type.spread === "AllSpread") {
-                        arrParam = functionNode.context.type.parameters.at(-2);
+                    if (functionNodeType.spread === FunctionSpread.AllSpread) {
+                        arrParam = functionNodeType.parameters.at(-2);
                     }
-                    else if (functionNode.context.type.spread === "ArraySpread") {
-                        arrParam = functionNode.context.type.parameters.at(-1);
+                    else if (functionNodeType.spread === FunctionSpread.ArraySpread) {
+                        arrParam = functionNodeType.parameters.at(-1);
                     }
                     else {
                         throw new InvalidFunctionParameter();
@@ -84,7 +87,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                         throw new InvalidFunctionParameter();
                     }
 
-                    const arrParamName = arrParam.name;
+                    const arrParamName = arrParam.paramName;
 
                     if (!args[arrParamName]) {
                         const arrayDeclaration: InternalInstructionNode<Context["Array"]> = {
@@ -92,10 +95,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                             endsAt: -1,
                             context: {
                                 children: [],
-                                type: {
-                                    name: "array",
-                                    elementType: (arrParam.type as any /* TODO Rethink how to handle those types, maybe add validation */).elementType,
-                                }
+                                type: new ArrayType(arrParam.type),
                             }
                         };
 
@@ -106,10 +106,10 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
                         throw new CompilerError("The array parameter is not an array");
                     }
 
-                    args[arrParamName].context.children.push(child);
+                    (args[arrParamName] as any).context.children.push(child); // TODO Why do we need "as any" here?
                 }
                 else {
-                    args[functionNode.context.type.parameters[childIndex].name] = child; // TODO Type validations
+                    args[functionNodeType.parameters[childIndex].paramName] = child; // TODO Type validations
                 }
             }
         }
@@ -120,7 +120,7 @@ export class FunctionCallVisitor extends InternalInstructionVisitor {
             context: {
                 args,
                 function: functionNode,
-                type: functionNode.context.type.returnType,
+                type: functionNodeType.returns,
             }
         };
 

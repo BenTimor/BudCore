@@ -1,27 +1,14 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { FunctionParameterType, FunctionSpread, FunctionType, StringType } from "../../types/types";
 
 const ranDeclarationNode: InternalInstructionNode<Context["NativeFunction"]> = {
     instruction: "NativeFunction",
     endsAt: -1,
     context: {
         name: "NativeBlockRan",
-        type: {
-            name: "function",
-            spread: "NoSpread",
-            parameters: [
-                {
-                    name: "id",
-                    type: {
-                        name: "string",
-                    },
-                    mutable: false,
-                    optional: false,
-                }
-            ],
-            returnType: {
-                name: "boolean",
-            }
-        }
+        type: new FunctionType([
+            new FunctionParameterType("id", new StringType(), false, false),
+        ], new StringType(), FunctionSpread.NoSpread),
     }
 };
 

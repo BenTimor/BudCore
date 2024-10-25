@@ -1,7 +1,7 @@
 import { ASTBuilder, InstructionNode, InstructionParser, InstructionVisitor, ReturnedInstructionNode } from "engine";
 import { Instructions } from "../../types/instructions";
 import { Injections } from "./injections";
-import { Type } from "./types";
+import { ArrayType, BooleanType, FunctionType, TupleType, Type, TypeType } from "./types";
 
 export * from "./memory";
 export * from "./injections";
@@ -25,8 +25,8 @@ export abstract class InternalInstructionVisitor extends InstructionVisitor<Inst
     }
 }
 
-export type TypedContext = {
-    type: Type;
+export type TypedContext<T extends Type<string> = Type<string>> = {
+    type: T;
 };
 
 export type BlockContext = {
@@ -37,10 +37,7 @@ export type BlockContext = {
 export type FunctionContext = {
     defaults: Record<string, InternalInstructionNode<any>>;
     block: InternalInstructionNode<BlockContext>,
-    type: {
-        name: "function",
-    },
-} & TypedContext;
+} & TypedContext<FunctionType>;
 
 // TODO Move to a separate file
 export type Context = {
@@ -94,10 +91,8 @@ export type Context = {
         value: string;
     } & TypedContext,
     Type: {
-        type: {
-            name: "type",
-        }
-    } & TypedContext,
+        value: Type<string>;
+    } & TypedContext<TypeType>,
     String: {
         value: string;
     } & TypedContext,
@@ -120,8 +115,8 @@ export type Context = {
         identifier: string;
     },
     Not: {
-        value: InternalInstructionNode<TypedContext & { type: { name: "boolean" } }>;
-    } & TypedContext,
+        value: InternalInstructionNode<TypedContext>;
+    } & TypedContext<BooleanType>,
     ArrayIndexing: {
         array: InternalInstructionNode<TypedContext & { type: { name: "array" } }>; // TODO DRY Types
         index: InternalInstructionNode<TypedContext & { type: { name: "number" } }>;

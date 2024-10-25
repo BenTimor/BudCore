@@ -1,4 +1,5 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { BooleanType } from "../../types/types";
 
 export const trueNode: InternalInstructionNode<Context["VariableDeclaration"]> = {
     instruction: "VariableDeclaration",
@@ -7,9 +8,7 @@ export const trueNode: InternalInstructionNode<Context["VariableDeclaration"]> =
     context: {
         name: "true",
         mutable: false,
-        type: {
-            name: "boolean",
-        },
+        type: new BooleanType(),
         value: {
             instruction: "Literal",
             context: {
@@ -27,9 +26,7 @@ export const falseNode: InternalInstructionNode<Context["VariableDeclaration"]> 
     context: {
         name: "false",
         mutable: false,
-        type: {
-            name: "boolean",
-        },
+        type: new BooleanType(),
         value: {
             instruction: "Literal",
             context: {

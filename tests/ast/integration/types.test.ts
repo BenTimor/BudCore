@@ -16,6 +16,7 @@ describe("Types and variables", () => {
         const varContext = varNode!.context as Context["VariableDeclaration"];
 
         expect(varContext).toBeDefined();
+        expect(varContext.type).toBeDefined();
         expect(varContext.type?.name).toBe("number");
     });
 

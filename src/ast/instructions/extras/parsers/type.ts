@@ -1,6 +1,7 @@
 import { ReturnedInstructionNode } from "engine";
 import { Instructions } from "../../../../types";
-import { CompilerError, Context, InternalInstructionParser, isInstruction } from "../../../types";
+import { CompilerError, Context, InternalInstructionNode, InternalInstructionParser, isInstruction } from "../../../types";
+import { TypeType, VoidType } from "../../../types/types";
 
 export class TypeParser extends InternalInstructionParser {
     instruction: Instructions = "Type";
@@ -15,10 +16,13 @@ export class TypeParser extends InternalInstructionParser {
             throw new CompilerError("Couldn't read variable in type parser");
         }
 
+        const declarationNode = this.astBuilder.getNode(next.context.identifier) as InternalInstructionNode<Context["VariableDeclaration"]>;        
+
         return {
             instruction: "Type",
             context: {
-                type: next.context.type,
+                type: new TypeType(),
+                value: (declarationNode.context.value as any).context.value,
             }
         }
     }

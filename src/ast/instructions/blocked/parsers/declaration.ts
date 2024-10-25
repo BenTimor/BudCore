@@ -1,16 +1,16 @@
 import { nanoid } from "nanoid";
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
-import { FunctionParameterType } from "../../../types/types";
+import { AnyType, FunctionParameterType, FunctionSpread, FunctionType } from "../../../types/types";
 import { ExpectedArrayParameter, ExpectedBlockAfterFunctionDeclaration, ExpectedObjectAndArrayParameter, ExpectedObjectParameter, ExpectedVariableDeclaration, MissingParametersDeclaration } from "../errors";
 
 type Arrow = "=>" | "=>>" | "=:>" | "=:>>";
 
-const spreadMap: Record<Arrow, "NoSpread" | "ArraySpread" | "ObjectSpread" | "AllSpread"> = {
-    "=>": "NoSpread",
-    "=>>": "ArraySpread",
-    "=:>": "ObjectSpread",
-    "=:>>": "AllSpread",
+const spreadMap: Record<Arrow, FunctionSpread> = {
+    "=>": FunctionSpread.NoSpread,
+    "=>>": FunctionSpread.ArraySpread,
+    "=:>": FunctionSpread.ObjectSpread,
+    "=:>>": FunctionSpread.AllSpread,
 }
 
 export class FunctionDeclarationParser extends InternalInstructionParser<Context["FunctionDeclaration"]> {
@@ -35,12 +35,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                 throw new ExpectedVariableDeclaration();
             }
 
-            parameters.push({
-                name: child.context.name,
-                type: child.context.type,
-                mutable: child.context.mutable,
-                optional: !!child.context.value,
-            });
+            parameters.push(new FunctionParameterType(child.context.name, child.context.type, child.context.mutable, !!child.context.value));
 
             if (child.context.value) {
                 defaults[child.context.name] = child.context.value;
@@ -49,7 +44,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
 
         const spread = spreadMap[this.arg as Arrow];
 
-        if (spread === "AllSpread") {
+        if (spread === FunctionSpread.AllSpread) {
             const objParam = parameters.at(-1);
             const arrParam = parameters.at(-2);
 
@@ -57,14 +52,14 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                 throw new ExpectedObjectAndArrayParameter();
             }
         }
-        else if (spread === "ArraySpread") {
+        else if (spread === FunctionSpread.ArraySpread) {
             const arrParam = parameters.at(-1);
 
             if (!arrParam || arrParam.type.name !== "array") {
                 throw new ExpectedArrayParameter();
             }
         }
-        else if (spread === "ObjectSpread") {
+        else if (spread === FunctionSpread.ObjectSpread) {
             const objParam = parameters.at(-1);
 
             if (!objParam || objParam.type.name !== "object") {
@@ -119,12 +114,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
         const functionNode: InternalInstructionNode<Context["FunctionDeclaration"]> = {
             instruction: "FunctionDeclaration",
             context: {
-                type: {
-                    name: "function",
-                    parameters,
-                    spread,
-                    returnType: { name: "any" },
-                },
+                type: new FunctionType(parameters, new AnyType(), spread),
                 defaults,
                 block: {} as any, // TODO Rethink what should be here
             },
@@ -141,7 +131,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
 
         functionNode.context.block = block;
         functionNode.endsAt = this.nextIndex;
-        functionNode.context.type.returnType = block.context.type;
+        functionNode.context.type.returns = block.context.type;
 
         return null;
     }

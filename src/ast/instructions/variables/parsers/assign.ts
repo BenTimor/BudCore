@@ -1,5 +1,6 @@
 import { VariablesInstructions } from "../../../../types";
 import { CompilerError, Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
+import { VoidType } from "../../../types/types";
 import { MissingEqualsSign, MissingVariableValue, MultipleValuesInVariable } from "../errors";
 import { VariableIsImmutable, VariableNotFound } from "../errors/assign";
 
@@ -51,9 +52,7 @@ export class VariableAssignmentParser extends InternalInstructionParser<Context[
             instruction: "VariableAssignment",
             context: {
                 identifier: varIdentifier,
-                type: isTyped(value) ? value.context.type : {
-                    name: "void",
-                },
+                type: isTyped(value) ? value.context.type : new VoidType(),
                 value: value,
             },
         };

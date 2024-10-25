@@ -1,30 +1,14 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { AnyType, ArrayType, FunctionParameterType, FunctionSpread, FunctionType, VoidType } from "../../types/types";
 
 const logDeclarationNode: InternalInstructionNode<Context["NativeFunction"]> = {
     instruction: "NativeFunction",
     endsAt: -1,
     context: {
         name: "NativeLog",
-        type: {
-            name: "function",
-            spread: "ArraySpread",
-            parameters: [
-                {
-                    name: "values",
-                    type: {
-                        name: "array",
-                        elementType: {
-                            name: "any",
-                        }
-                    },
-                    mutable: false,
-                    optional: false,
-                }
-            ],
-            returnType: {
-                name: "void",
-            }
-        }
+        type: new FunctionType([
+            new FunctionParameterType("values", new ArrayType(new AnyType()), false, false),
+        ], new VoidType(), FunctionSpread.ArraySpread),
     }
 };
 

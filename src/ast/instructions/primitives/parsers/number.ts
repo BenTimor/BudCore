@@ -1,4 +1,5 @@
 import { ReturnedInternalInstructionNode, InternalInstructionParser, Context } from "../../../types";
+import { NumberType } from "../../../types/types";
 
 export class NumberParser extends InternalInstructionParser<Context["Number"]> {
     instruction: "Number" = "Number";
@@ -12,9 +13,7 @@ export class NumberParser extends InternalInstructionParser<Context["Number"]> {
             instruction: "Number",
             context: {
                 value: +this.arg,
-                type: {
-                    name: "number",
-                }
+                type: new NumberType(),
             },
         };
     }

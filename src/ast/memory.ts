@@ -34,7 +34,7 @@ export class Memory implements IMemory {
         return this.memory[key] ?? this.parent?.get(key, false);
     }
 
-    scope() {
+    scope(): Memory {
         return new Memory(this);
     }
 }

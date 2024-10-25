@@ -1,5 +1,5 @@
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction, isTyped } from "../../../types";
-import { typesEqual } from "../../../utils";
+import { ArrayType, NumberType } from "../../../types/types";
 
 export class ArrayIndexingVisitor extends InternalInstructionVisitor {
     check(): boolean {
@@ -22,14 +22,14 @@ export class ArrayIndexingVisitor extends InternalInstructionVisitor {
 
         const index = indexing.context.children[0];
 
-        if (!isTyped(index) || !typesEqual(index.context.type, { name: "number" })) {
+        if (!isTyped(index) || !index.context.type.assignableTo(new NumberType())) {
             throw new Error("Invalid array indexing handling"); // TODO Proper error
         }
 
         const node: InternalInstructionNode<Context["ArrayIndexing"]> = {
             instruction: "ArrayIndexing",
             context: {
-                type: array.context.type.elementType,
+                type: (array.context.type as ArrayType).elementType,
                 array: array as any,
                 index: index as any, // TODO Solve those type issues
             },

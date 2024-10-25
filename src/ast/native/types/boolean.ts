@@ -1,15 +1,12 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { BooleanType, TypeType } from "../../types/types";
 
 const booleanType: InternalInstructionNode<Context["Type"]> = {
     instruction: "Type",
     endsAt: -1,
     context: {
-        type: {
-            name: "type",
-            type: {
-                name: "boolean",
-            }
-        }
+        type: new TypeType(),
+        value: new BooleanType(),
     },
 };
 

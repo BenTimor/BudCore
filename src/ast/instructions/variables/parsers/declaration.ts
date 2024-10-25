@@ -2,8 +2,7 @@ import { nanoid } from "nanoid";
 import { VariablesInstructions } from "../../../../types";
 import { Context, InternalInstructionNode, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
 import { InvalidVariableDeclaration, MissingEqualsSign, MissingVariableName, MissingVariableValue, MultipleValuesInVariable, VariableAlreadyExists } from "../errors";
-import { typesEqual } from "../../../utils";
-import { VoidType } from "../../../types/types";
+import { AnyType, VoidType } from "../../../types/types";
 
 export class VariableDeclarationParser extends InternalInstructionParser<Context["VariableDeclaration"]> {
     instruction: VariablesInstructions = "VariableDeclaration";
@@ -72,9 +71,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
                 context: {
                     name: name,
                     mutable,
-                    type: type ? type.context.type.type : {
-                        name: "any",
-                    },
+                    type: type ? type.context.value : new AnyType(),
                 },
             };
         }
@@ -89,9 +86,7 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
             context: {
                 name: name,
                 mutable,
-                type: type ? type.context.type.type : {
-                    name: "any",
-                },
+                type: type ? type.context.value : new AnyType(),
             },
             endsAt: this.nextIndex,
         };
@@ -112,19 +107,15 @@ export class VariableDeclarationParser extends InternalInstructionParser<Context
 
         const value = values[0];
 
-        let valueType = isTyped(value) ? value.context.type : ({
-            name: "void",
-        } as VoidType);
+        let valueType = isTyped(value) ? value.context.type : new VoidType();
 
-        if (type) {
-            
-
-            if (!typesEqual(type.context.type.type, valueType)) {
+        if (type) {                        
+            if (!valueType.assignableTo(type.context.value)) {
                 throw new InvalidVariableDeclaration();
             }
         }
 
-        varDeclarationNode.context.type = type ? type.context.type.type : valueType;
+        varDeclarationNode.context.type = type ? type.context.value : valueType;
         varDeclarationNode.context.value = value;
         varDeclarationNode.endsAt = value.endsAt;
 

@@ -1,5 +1,5 @@
 import { Context, InternalInstructionNode, isTyped } from "../../../../ast/types";
-import { FunctionType } from "../../../../ast/types/types";
+import { FunctionParameterType, FunctionSpread, FunctionType } from "../../../../ast/types/types";
 import { InternalInstructionGenerator } from "../../../types";
 
 export class OperatorsGenerator extends InternalInstructionGenerator {
@@ -19,22 +19,10 @@ export class OperatorsGenerator extends InternalInstructionGenerator {
             instruction: "NativeFunction",
             context: {
                 name: node.context.function,
-                type: {
-                    name: "function",
-                    parameters: [{
-                        name: "left",
-                        type: leftNode.context.type,
-                        mutable: false,
-                        optional: false,
-                    }, {
-                        name: "right",
-                        type: rightNode.context.type,
-                        mutable: false,
-                        optional: false,
-                    }],
-                    spread: "NoSpread",
-                    returnType: node.context.type,
-                },
+                type: new FunctionType([
+                    new FunctionParameterType("left", leftNode.context.type, false, false),
+                    new FunctionParameterType("right", rightNode.context.type, false, false),
+                ], node.context.type, FunctionSpread.NoSpread),
             },
             endsAt: node.endsAt,
         };
@@ -47,7 +35,7 @@ export class OperatorsGenerator extends InternalInstructionGenerator {
                     right: node.context.right,
                 },
                 function: nativeInstruction,
-                type: (nativeInstruction.context.type as FunctionType).returnType,
+                type: (nativeInstruction.context.type as FunctionType).returns,
             },
             endsAt: node.endsAt,
         };

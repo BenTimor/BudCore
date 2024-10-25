@@ -1,6 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionParser, isInstruction, ReturnedInternalInstructionNode } from "../../../types";
-import { Type } from "../../../types/types";
+import { AnyType, Type } from "../../../types/types";
 import { InvalidIdentifier, MissingBlockAfterIdentifier, MissingBlockEnd } from "../errors";
 
 export class BlockStartParser extends InternalInstructionParser {
@@ -70,9 +70,7 @@ export class BlockParser extends InternalInstructionParser<Context["Block"]> {
 
         children.pop(); // Remove the BlockEnd
 
-        let type: Type = {
-            name: "any",
-        }
+        let type: Type<string> = new AnyType();
 
         try {
             const typeNode = this.next(["Type"]);

@@ -1,7 +1,6 @@
 import { Instructions } from "../../../../types";
 import { nativeOperators } from "../../../native";
 import { Context, InternalInstructionParser, isInstruction, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { typesEqual } from "../../../utils";
 import { InvalidLeftValue, InvalidRightValue, MissingLeftValue, MissingRightValue, OperatorNotFound } from "../errors";
 
 export class OperatorParser extends InternalInstructionParser<Context["Operator"]> {
@@ -36,7 +35,7 @@ export class OperatorParser extends InternalInstructionParser<Context["Operator"
         const rightType = right.context.type;
 
         const operator = nativeOperators[this.arg].find((operator) => {
-            return typesEqual(operator.leftType, leftType) && typesEqual(operator.rightType, rightType);
+            return leftType.assignableTo(operator.leftType) && rightType.assignableTo(operator.rightType);
         });
 
         if (!operator) {

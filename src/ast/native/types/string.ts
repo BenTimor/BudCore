@@ -1,15 +1,12 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { StringType, TypeType } from "../../types/types";
 
 const stringType: InternalInstructionNode<Context["Type"]> = {
     instruction: "Type",
     endsAt: -1,
     context: {
-        type: {
-            name: "type",
-            type: {
-                name: "string",
-            }
-        }
+        type: new TypeType(),
+        value: new StringType(),
     },
 };
 

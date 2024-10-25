@@ -1,15 +1,12 @@
 import { Context, InternalInstructionNode } from "../../types";
+import { NumberType, TypeType } from "../../types/types";
 
 const numberType: InternalInstructionNode<Context["Type"]> = {
     instruction: "Type",
     endsAt: -1,
     context: {
-        type: {
-            name: "type",
-            type: {
-                name: "number",
-            }
-        }
+        type: new TypeType(),
+        value: new NumberType(),
     },
 };
 

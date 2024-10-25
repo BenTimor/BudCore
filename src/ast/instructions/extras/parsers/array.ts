@@ -1,7 +1,6 @@
 import { Instructions } from "../../../../types";
-import { Memory } from "../../../memory";
 import { Context, InternalInstructionParser, isTyped, ReturnedInternalInstructionNode } from "../../../types";
-import { typesEqual } from "../../../utils";
+import { AnyType, ArrayType, VoidType } from "../../../types/types";
 
 export class ArrayEndParser extends InternalInstructionParser {
     limited: boolean = true;
@@ -39,28 +38,18 @@ export class ArrayParser extends InternalInstructionParser<Context["Array"]> {
             return {
                 instruction: "Array",
                 context: {
-                    type: {
-                        name: "array",
-                        elementType: {
-                            name: "any",
-                        },
-                    },
+                    type: new ArrayType(new AnyType()),
                     children: [],
                 },
             }
         }
 
+        
+
         return {
             instruction: "Array",
             context: {
-                type: {
-                    name: "array",
-                    elementType: children.reduce((prev, curr) => isTyped(curr) && typesEqual(prev, curr.context.type) ? curr.context.type : {
-                        name: "any",
-                    }, isTyped(children[0]) ? children[0].context.type : {
-                        name: "void",
-                    }),
-                },
+                type: new ArrayType(new AnyType()), // TODO : Infer the type
                 children,
             },
         }

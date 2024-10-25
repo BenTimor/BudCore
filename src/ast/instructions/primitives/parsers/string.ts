@@ -1,5 +1,6 @@
 import { Instructions } from "../../../../types";
 import { Context, InternalInstructionParser, ReturnedInternalInstructionNode } from "../../../types";
+import { StringType } from "../../../types/types";
 import { InvalidEscapeCharacter, StringNotClosed } from "../errors";
 
 export class StringEndParser extends InternalInstructionParser {
@@ -111,9 +112,7 @@ export class StringParser extends InternalInstructionParser<Context["String"]> {
             instruction: "String",
             context: {
                 value: content,
-                type: {
-                    name: "string",
-                }
+                type: new StringType(),
             }
         }
     }
