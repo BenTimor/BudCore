@@ -1,5 +1,6 @@
 import { ArrayEndParser, ArrayParser } from "./array";
 import { EqualsParser } from "./equals";
+import { IndexingParser } from "./indexing";
 import { NotParser } from "./not";
 import { OperatorParser } from "./operator";
 import { ParenthesesEndParser, ParenthesesParser } from "./parentheses";
@@ -18,4 +19,5 @@ export const extrasInstructions = [
     ArrayEndParser,
     TypeParser,
     NotParser,
+    IndexingParser,
 ];
