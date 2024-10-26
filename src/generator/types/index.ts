@@ -15,7 +15,7 @@ export class InternalGenerator extends Generator {
     async generateInBlock(id: string, nodes: InternalInstructionNode[]): Promise<string> {
         const generated = (await this.generateMany(nodes)).map(g => `(() => ${g})`);
     
-        return `bud.block(${JSON.stringify(id)}, bud => [${generated.join(", ")}])`;
+        return `bud.block(${JSON.stringify(id)}, bud => [${generated.join(",\n ")}])`;
     }
 
     async generateInParentheses(nodes: InternalInstructionNode[]): Promise<string> {

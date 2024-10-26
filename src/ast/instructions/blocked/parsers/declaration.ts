@@ -69,7 +69,7 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
 
         const memoryScope = this.injection.memory.scope();
 
-        const paramVariableList: InternalInstructionNode<Context["VariableDeclaration"]>[] = parameters.map(param => {
+        const paramVariableList: InternalInstructionNode<Context["VariableDeclaration"]>[] = parameters.map(param => {            
             // TODO This is duplicate code from VariableDeclarationParser
             let identifier: `VAR_DECLARATION_${string}` = `VAR_DECLARATION_${nanoid()}`;
 
@@ -82,18 +82,18 @@ export class FunctionDeclarationParser extends InternalInstructionParser<Context
                 instruction: "Literal",
                 endsAt: -1,
                 context: {
-                    value: param.name,
+                    value: param.paramName,
                     type: param.type,
                 }
             };
 
-            memoryScope.set(`VAR_${param.name}`, identifier, true);
+            memoryScope.set(`VAR_${param.paramName}`, identifier, true);
 
             return {
                 instruction: "VariableDeclaration",
                 endsAt: -1,
                 context: {
-                    name: param.name,
+                    name: param.paramName,
                     mutable: param.mutable,
                     type: param.type,
                     value: literalValue,
