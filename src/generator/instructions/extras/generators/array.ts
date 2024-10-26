@@ -8,6 +8,6 @@ export class ArrayGenerator extends InternalInstructionGenerator {
 
     async handle(node: InternalInstructionNode<Context["Array"]>) {
         const values = await Promise.all(node.context.children.map((child: InternalInstructionNode) => this.generator.generateOne(child)));
-        return `[${values.join(", ")}]`;
+        return `bud.array([${values.join(", ")}])`;
     }
 }

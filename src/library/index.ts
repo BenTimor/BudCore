@@ -144,6 +144,18 @@ class Variables {
     }
 }
 
+function newBudArray(arr: any[]) {
+    return new Proxy(arr, {
+        get(target, prop: any) {
+            if (prop === "size") {
+                return target.length;
+            }
+
+            return target[prop];
+        }
+    });
+}
+
 export class Bud {
     public variables: Variables;
     public returnValue: any = undefined;
@@ -230,6 +242,10 @@ export class Bud {
 
     export(name: string, value: any) {
         this.exports[name] = value;
+    }
+
+    array(array: any[]) {
+        return newBudArray(array);
     }
 }
 
