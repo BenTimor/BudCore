@@ -1,5 +1,5 @@
-import { ArrayIndexingVisitor } from "./array-indexing";
+import { IndexingVisitor } from "./indexing";
 
 export const extrasVisitors = [
-    ArrayIndexingVisitor,
+    IndexingVisitor,
 ]

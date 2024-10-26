@@ -2,6 +2,8 @@ export interface Type<Name extends string> {
     name: Name;
 
     assignableTo(other: Type<string>): boolean;
+    featureByName(name: string): Type<string> | undefined;
+    featureByType(type: Type<string>): Type<string> | undefined;
 }
 
 class BaseType<Name extends string> implements Type<Name> {
@@ -19,6 +21,14 @@ class BaseType<Name extends string> implements Type<Name> {
     assignableTo(other: Type<string>): boolean {
         return this.defaultAssignableTo(other) || this.customAssignableTo(other);
     }
+
+    featureByName(name: string): Type<string> | undefined {
+        return undefined;
+    }
+    
+    featureByType(type: Type<string>): Type<string> | undefined {
+        return undefined;
+    }
 }
 
 export class TypeType extends BaseType<"type"> {
@@ -34,6 +44,14 @@ export class AnyType extends BaseType<"any"> {
 
     assignableTo(other: Type<string>): boolean {
         return true;
+    }
+
+    featureByName(name: string): Type<string> | undefined {
+        return new AnyType();
+    }
+
+    featureByType(type: Type<string>): Type<string> | undefined {
+        return new AnyType();
     }
 }
 
@@ -69,6 +87,20 @@ export class ArrayType extends BaseType<"array"> {
     customAssignableTo(other: Type<string>): boolean {
         return other.name === "array"
             && this.elementType.assignableTo((other as ArrayType).elementType);
+    }
+
+    featureByName(name: string): Type<string> | undefined {
+        return {
+            size: new NumberType(),
+        }[name];
+    }
+
+    featureByType(type: Type<string>): Type<string> | undefined {
+        if (type.assignableTo(new NumberType())) {
+            return this.elementType;
+        }
+
+        return new AnyType();
     }
 }
 

@@ -1,5 +1,5 @@
 import { ArrayGenerator } from "./array";
-import { ArrayIndexingGenerator } from "./array-indexing";
+import { IndexingGenerator } from "./indexing";
 import { LiteralGenerator } from "./literal";
 import { NotGenerator } from "./not";
 import { OperatorsGenerator } from "./operators";
@@ -10,7 +10,7 @@ import { TypeGenerator } from "./types";
 export const extrasGenerators = [
     SemicolonGenerator,
     ArrayGenerator,
-    ArrayIndexingGenerator,
+    IndexingGenerator,
     OperatorsGenerator,
     ParenthesesGenerator,
     LiteralGenerator,

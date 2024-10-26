@@ -1,18 +1,17 @@
 import { CompilerError, Context, InternalInstructionNode, InternalInstructionVisitor, isInstruction, isTyped } from "../../../types";
-import { ArrayType, NumberType } from "../../../types/types";
 
-export class ArrayIndexingVisitor extends InternalInstructionVisitor {
+export class IndexingVisitor extends InternalInstructionVisitor {
     check(): boolean {
         const indexing = this.astBuilder.nodes.at(-1);
-        const array = this.astBuilder.nodes.at(-2);
+        const obj = this.astBuilder.nodes.at(-2);
 
-        return isTyped(array) && array.context.type.name === "array" && isInstruction(indexing, "Array"); // TODO Fix type checking to use internal utils
+        return isTyped(obj) && isInstruction(indexing, "Array");
     }
     handle(): void {
         const indexing = this.astBuilder.nodes.pop();
-        const array = this.astBuilder.nodes.pop();
+        const obj = this.astBuilder.nodes.pop();
 
-        if (!isInstruction(indexing, "Array") || !(isTyped(array) && array.context.type.name === "array")) {
+        if (!isInstruction(indexing, "Array") || !isTyped(obj)) {
             throw new CompilerError("Invalid array indexing handling");
         }
 
@@ -22,15 +21,21 @@ export class ArrayIndexingVisitor extends InternalInstructionVisitor {
 
         const index = indexing.context.children[0];
 
-        if (!isTyped(index) || !index.context.type.assignableTo(new NumberType())) {
+        if (!isTyped(index)) {
             throw new Error("Invalid array indexing handling"); // TODO Proper error
         }
 
-        const node: InternalInstructionNode<Context["ArrayIndexing"]> = {
-            instruction: "ArrayIndexing",
+        const featureType = obj.context.type.featureByType(index.context.type);
+
+        if (!featureType) {
+            throw new Error("Invalid array indexing handling"); // TODO Proper error
+        }
+
+        const node: InternalInstructionNode<Context["Indexing"]> = {
+            instruction: "Indexing",
             context: {
-                type: (array.context.type as ArrayType).elementType,
-                array: array as any,
+                type: featureType,
+                obj: obj as any,
                 index: index as any, // TODO Solve those type issues
             },
             endsAt: index.endsAt,
@@ -38,4 +43,5 @@ export class ArrayIndexingVisitor extends InternalInstructionVisitor {
 
         this.astBuilder.addNode(node);
     }
+    
 }

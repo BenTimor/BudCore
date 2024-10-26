@@ -117,9 +117,9 @@ export type Context = {
     Not: {
         value: InternalInstructionNode<TypedContext>;
     } & TypedContext<BooleanType>,
-    ArrayIndexing: {
-        array: InternalInstructionNode<TypedContext & { type: { name: "array" } }>; // TODO DRY Types
-        index: InternalInstructionNode<TypedContext & { type: { name: "number" } }>;
+    Indexing: {
+        obj: InternalInstructionNode<TypedContext>;
+        index: InternalInstructionNode<TypedContext>;
     } & TypedContext,
     Export: {
         name: string;
